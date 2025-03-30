@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">ccpApp</string>
+    <string name="title_home">Home</string>
+    <string name="inicia_sesi_n_con">Inicia sesión con</string>
+    <string name="usuario">Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="crear_usuario">Crear Usuario</string>
+    <string name="nombres">Nombres</string>
+    <string name="apellidos">Apellidos</string>
+    <string name="tipo">Tipo</string>
+    <string name="usuario_fiedl">Usuario</string>
+    <string name="password_field">Contraseña</string>
+    <string name="repetir_contrase_a">Repetir Contraseña</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="iniciar_sesi_n">Iniciar Sesión</string>
+    <string name="logo">Logo</string>
+    <string name="inicia_sesi_n_">Inicia sesión con:</string>
+    <string name="usuario_login">Usuario</string>
+    <string name="contrase_a_login">Contraseña</string>
+    <string name="ingresar_login">Ingresar</string>
+    <string name="crear_cuenta_login">Crear cuenta</string>
+    <string name="olvidaste_contrase_a_login">Olvidaste contraseña?</string>
 </resources>
