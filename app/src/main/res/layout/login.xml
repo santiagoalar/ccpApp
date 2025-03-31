@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#000000"
+        android:padding="24dp">
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/inicia_sesi_n_con"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="24dp"/>
+
+        <!-- Input Usuario -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/usuario"
+            android:textColorHint="#BBBBBB"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/edittext_border"
+            android:padding="12dp"
+            android:inputType="text"
+            android:autofillHints="" />
+
+        <!-- Input Contraseña -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:textColorHint="#BBBBBB"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/edittext_border"
+            android:padding="12dp"
+            android:inputType="textPassword"
+            android:layout_marginTop="12dp"
+            android:autofillHints="" />
+
+        <!-- Botón Ingresar -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ingresar"
+            android:textColor="#FFFFFF"
+            android:background="@android:color/black"
+            android:layout_marginTop="24dp"
+            android:padding="12dp"
+            android:gravity="center"
+            android:drawableTint="#FFFFFF"
+            android:backgroundTint="@android:color/black"
+            android:backgroundTintMode="src_in"
+            android:stateListAnimator="@null"
+            android:outlineProvider="none"
+            android:clipToOutline="false"
+            android:elevation="0dp"
+            android:shape="rectangle"
+            android:strokeColor="#FFFFFF" />
+
+        <!-- Olvidaste tu contraseña -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
