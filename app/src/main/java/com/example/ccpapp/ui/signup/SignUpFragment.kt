@@ -13,13 +13,14 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.FragmentSignupBinding
+import com.example.ccpapp.viewmodels.UserViewModel
 import org.json.JSONObject
 
 class SignUpFragment : Fragment() {
 
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: SignUpViewModel
+    private lateinit var viewModel: UserViewModel
     private var navc: NavController? = null
 
     override fun onCreateView(
@@ -94,7 +95,7 @@ class SignUpFragment : Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        viewModel = ViewModelProvider(this, SignUpViewModel.Factory(activity.application))[SignUpViewModel::class.java]
+        viewModel = ViewModelProvider(this, UserViewModel.Factory(activity.application))[UserViewModel::class.java]
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) onNetworkError()
@@ -109,8 +110,8 @@ class SignUpFragment : Fragment() {
         }
         viewModel = ViewModelProvider(
             this,
-            SignUpViewModel.Factory(activity.application)
-        )[SignUpViewModel::class.java]
+            UserViewModel.Factory(activity.application)
+        )[UserViewModel::class.java]
 
         navc = Navigation.findNavController(view)
         observePostUserResult(view)

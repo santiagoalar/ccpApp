@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ccpapp.constants.StaticConstants
+import com.example.ccpapp.models.TokenInfo
 import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -31,9 +32,6 @@ class NetworkServiceAdapter(context: Context) {
     suspend fun postUser(userJson: JSONObject) = suspendCoroutine<Unit> { cont ->
         val url = "${StaticConstants.API_BASE_URL}users/"
 
-        Log.d("url", url)
-        Log.d("json", userJson.toString())
-
         val request = JsonObjectRequest(
             Request.Method.POST, url, userJson,
             { response ->
@@ -50,16 +48,31 @@ class NetworkServiceAdapter(context: Context) {
         requestQueue.add(request)
     }
 
-    /*
-    * curl --location 'http://127.0.0.1:5001/bff/v1/mobile/users' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "name": "Usuario Movil",
-    "phone": "3153334455",
-    "email": "usumobile@example.com",
-    "password": "pass123",
-    "role": "CLIENTE"
-}'
-    * */
+    suspend fun authUser(userJson: JSONObject): TokenInfo = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}users/auth"
+
+        val request = JsonObjectRequest(
+            Request.Method.POST, url, userJson,
+            { response ->
+                try {
+                    val token = response.getString("token")
+                    val id = response.getString("id")
+                    val expiresAt = response.getString("expiresAt")
+                    val tokenInfo = TokenInfo(expiresAt = expiresAt, id = id, token = token)
+                    cont.resume(tokenInfo)
+                    Log.d("response", "response successful: $tokenInfo")
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                cont.resumeWithException(error)
+                Log.d("response failed", error.message.toString())
+            }
+        )
+
+        requestQueue.add(request)
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.example.ccpapp.ui.signup
+package com.example.ccpapp.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -7,20 +7,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-class SignUpViewModel (application: Application) :  AndroidViewModel(application) {
+class UserViewModel (application: Application) :  AndroidViewModel(application) {
 
     private val userRepository = UserRepository(application)
 
     private val _postUserResult = MutableLiveData<Boolean>()
+    private val _authUserResult = MutableLiveData<TokenInfo>()
     val postUserResult: LiveData<Boolean>
         get() = _postUserResult
 
+    val authUserResult: LiveData<TokenInfo>
+        get() = _authUserResult
 
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
 
@@ -56,9 +60,9 @@ class SignUpViewModel (application: Application) :  AndroidViewModel(application
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return SignUpViewModel(app) as T
+                return UserViewModel(app) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
@@ -74,4 +78,17 @@ class SignUpViewModel (application: Application) :  AndroidViewModel(application
             }
         }
     }
+
+
+    fun authenticateUser(userObject: JSONObject){
+        viewModelScope.launch {
+            try {
+                val tokenInfo = userRepository.authUser(userObject)
+                _authUserResult.value = tokenInfo
+            } catch (e: Exception){
+                _authUserResult.value = TokenInfo("", "", "")
+            }
+        }
+    }
+
 }
