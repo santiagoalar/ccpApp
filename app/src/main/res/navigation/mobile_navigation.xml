@@ -10,12 +10,29 @@
         android:name="com.example.ccpapp.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.ccpapp.ui.signup.SignUpFragment"
-        android:label="fragment_signup"
-        tools:layout="@layout/fragment_signup" />
-
+        android:label="SignUpFragment" />
+    <fragment
+        android:id="@+id/clientFragment"
+        android:name="com.example.ccpapp.ui.client.ClientFragment"
+        android:label="fragmentClient"
+        tools:layout="@layout/fragment_client" />
+    <fragment
+        android:id="@+id/sellerFragment"
+        android:name="com.example.ccpapp.ui.client.SellerFragment"
+        android:label="fragment_director"
+        tools:layout="@layout/fragment_seller" />
+    <fragment
+        android:id="@+id/directorFragment"
+        android:name="com.example.ccpapp.ui.client.DirectorFragment"
+        android:label="fragment_director"
+        tools:layout="@layout/fragment_director" />
+    <fragment
+        android:id="@+id/carrierFragment"
+        android:name="com.example.ccpapp.ui.client.CarrierFragment"
+        android:label="CarrierFragment"
+        tools:layout="@layout/fragment_carrier"/>
 
 </navigation>

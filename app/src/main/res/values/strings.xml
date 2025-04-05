@@ -7,7 +7,7 @@
     <string name="ingresar">Ingresar</string>
     <string name="crear_usuario">Crear Usuario</string>
     <string name="nombres">Nombres</string>
-    <string name="apellidos">Apellidos</string>
+    <string name="celular">Celular</string>
     <string name="tipo">Tipo</string>
     <string name="usuario_fiedl">Usuario</string>
     <string name="password_field">Contraseña</string>
@@ -21,4 +21,13 @@
     <string name="ingresar_login">Ingresar</string>
     <string name="crear_cuenta_login">Crear cuenta</string>
     <string name="olvidaste_contrase_a_login">Olvidaste contraseña?</string>
+    <string name="item_label">Items</string>
+    <string name="correo">Correo</string>
+    <!-- Dropdown items -->
+    <string-array name="tipo_usuario">
+        <item>CLIENTE</item>
+        <item>VENDEDOR</item>
+        <item>DIRECTIVO</item>
+        <item>TRANSPORTISTA</item>
+    </string-array>
 </resources>
