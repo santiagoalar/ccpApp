@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.ccpapp.models.TokenInfo
+import com.example.ccpapp.models.User
 import com.example.ccpapp.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,11 +21,15 @@ class UserViewModel (application: Application) :  AndroidViewModel(application) 
 
     private val _postUserResult = MutableLiveData<Boolean>()
     private val _authUserResult = MutableLiveData<TokenInfo>()
+    private val _tokenUserResult = MutableLiveData<User?>()
     val postUserResult: LiveData<Boolean>
         get() = _postUserResult
 
     val authUserResult: LiveData<TokenInfo>
         get() = _authUserResult
+
+    val tokenUserResult: MutableLiveData<User?>
+        get() = _tokenUserResult
 
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
 
@@ -87,6 +92,17 @@ class UserViewModel (application: Application) :  AndroidViewModel(application) 
                 _authUserResult.value = tokenInfo
             } catch (e: Exception){
                 _authUserResult.value = TokenInfo("", "", "")
+            }
+        }
+    }
+
+    fun validateToken(token: String){
+        viewModelScope.launch {
+            try {
+                val userInfo = userRepository.validateToken(token)
+                _tokenUserResult.value = userInfo
+            } catch (e: Exception){
+                _tokenUserResult.value = null
             }
         }
     }

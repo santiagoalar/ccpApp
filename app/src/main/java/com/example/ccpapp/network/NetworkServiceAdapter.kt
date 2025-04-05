@@ -7,7 +7,9 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ccpapp.constants.StaticConstants
+import com.example.ccpapp.models.Rol
 import com.example.ccpapp.models.TokenInfo
+import com.example.ccpapp.models.User
 import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -73,6 +75,43 @@ class NetworkServiceAdapter(context: Context) {
 
         requestQueue.add(request)
     }
+
+    suspend fun getUser(token: String): User = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}users/me"
+
+        val request = object : JsonObjectRequest(Method.GET, url, null,
+            { response ->
+                try {
+                    val user = User(
+                        id = response.getString("id"),
+                        name = response.getString("name"),
+                        email = response.getString("email"),
+                        phone = response.getString("email"),
+                        password = null,
+                        role = Rol.valueOf(response.getString("role").uppercase())
+                    )
+                    cont.resume(user)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                cont.resumeWithException(error)
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+
+        // Suponiendo que tienes una instancia del requestQueue (por ejemplo desde NetworkServiceAdapter)
+        requestQueue.add(request)
+
+    }
+
+
 
 
 }

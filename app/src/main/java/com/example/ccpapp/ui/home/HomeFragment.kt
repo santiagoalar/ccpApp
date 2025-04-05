@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.FragmentHomeBinding
 import com.example.ccpapp.viewmodels.UserViewModel
@@ -45,6 +45,12 @@ class HomeFragment : Fragment() {
             }
             viewModel.authenticateUser(jsonBody)
         }
+
+        binding.textForgotPassword.setOnClickListener{v->
+            val navController = findNavController(v)
+            navController.navigate(R.id.clientFragment)
+
+        }
         return binding.root
     }
 
@@ -54,29 +60,28 @@ class HomeFragment : Fragment() {
             if (tokenInfo.token.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Token válido: ${tokenInfo.token}", Toast.LENGTH_SHORT).show()
+                viewModel.validateToken(tokenInfo.token)
+                Log.d("VALIDATE_TOKEN", "SE PROCEDE A VALIDAR EL TOKEN")
                 // Aquí puedes navegar dependiendo del rol si lo tienes
             }
         }
+
+        viewModel.tokenUserResult.observe(viewLifecycleOwner){ user ->
+            Log.d("DEBUG_USER", "User info: $user")
+            if (user != null) {
+                Log.d("DEBUG_USER", "User role:" + user.role.toString())
+                when (user.role.toString()) {
+                    "CLIENTE" -> findNavController().navigate(R.id.clientFragment)
+                    "VENDEDOR" -> findNavController().navigate(R.id.sellerFragment)
+                    "DIRECTIVO" -> findNavController().navigate(R.id.directorFragment)
+                    "TRANSPORTISTA" -> findNavController().navigate(R.id.carrierFragment)
+                    else -> Toast.makeText(context, "Rol no reconocido", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(requireContext(), "Credenciales incorrectas :(", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
-
-        /*if (isSuccess) {
-    val navController = Navigation.findNavController(view)
-    navController.navigate(R.id.navigation_home)
-} else {
-    Toast.makeText(requireContext(), "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-}*/
-
-        /*viewModel.authUserResult.observe(viewLifecycleOwner) { tokenInfo ->
-
-    when (tokenInfo.token) {
-        "cliente" -> navController.navigate(R.id.navigation_cliente)
-        "transportista" -> navController.navigate(R.id.navigation_transportista)
-        "gerente" -> navController.navigate(R.id.navigation_gerente)
-        else -> Toast.makeText(context, "Rol no reconocido", Toast.LENGTH_SHORT).show()
-    }
-}*/
-
 
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,7 +107,7 @@ class HomeFragment : Fragment() {
             UserViewModel.Factory(activity.application)
         )[UserViewModel::class.java]
 
-        navc = Navigation.findNavController(view)
+        navc = findNavController(view)
         observeAuthUserResult(view)
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
