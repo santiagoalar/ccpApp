@@ -1,9 +1,10 @@
 package com.example.ccpapp.models
 
 data class User(
+    val id: String,
     val name: String,
-    val lastName: String,
-    val type: String,
-    val user: String,
-    val password: String
+    val phone: String,
+    val email: String,
+    val password: String?,
+    val role: Rol
 )

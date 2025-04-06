@@ -2,23 +2,51 @@ package com.example.ccpapp.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.ccpapp.repository.UserRepository
+import com.example.ccpapp.models.TokenInfo
+import com.example.ccpapp.models.User
+import com.example.ccpapp.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
-class UserViewModel(application: Application): AndroidViewModel(application) {
+class UserViewModel (application: Application) :  AndroidViewModel(application) {
 
     private val userRepository = UserRepository(application)
+
+    private val _postUserResult = MutableLiveData<Boolean>()
+    private val _authUserResult = MutableLiveData<TokenInfo>()
+    private val _tokenUserResult = MutableLiveData<User?>()
+    val postUserResult: LiveData<Boolean>
+        get() = _postUserResult
+
+    val authUserResult: LiveData<TokenInfo>
+        get() = _authUserResult
+
+    val tokenUserResult: MutableLiveData<User?>
+        get() = _tokenUserResult
+
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
+
+    val eventNetworkError: LiveData<Boolean>
+        get() = _eventNetworkError
+
     private var _isNetworkErrorShown = MutableLiveData<Boolean>(false)
+
+    val isNetworkErrorShown: LiveData<Boolean>
+        get() = _isNetworkErrorShown
 
     init {
         refreshDataFromNetwork()
+    }
+
+    fun onNetworkErrorShown() {
+        _isNetworkErrorShown.value = true
     }
 
     private fun refreshDataFromNetwork() {
@@ -35,10 +63,6 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun onNetworkErrorShown() {
-        _isNetworkErrorShown.value = true
-    }
-
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
@@ -49,5 +73,38 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun postUser(userObject: JSONObject){
+        viewModelScope.launch {
+            try {
+                userRepository.saveData(userObject)
+                _postUserResult.value = true
+            } catch (e: Exception){
+                _postUserResult.value = false
+            }
+        }
+    }
+
+
+    fun authenticateUser(userObject: JSONObject){
+        viewModelScope.launch {
+            try {
+                val tokenInfo = userRepository.authUser(userObject)
+                _authUserResult.value = tokenInfo
+            } catch (e: Exception){
+                _authUserResult.value = TokenInfo("", "", "")
+            }
+        }
+    }
+
+    fun validateToken(token: String){
+        viewModelScope.launch {
+            try {
+                val userInfo = userRepository.validateToken(token)
+                _tokenUserResult.value = userInfo
+            } catch (e: Exception){
+                _tokenUserResult.value = null
+            }
+        }
+    }
 
 }
