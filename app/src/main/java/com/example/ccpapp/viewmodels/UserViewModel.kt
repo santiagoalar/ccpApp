@@ -9,14 +9,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
+import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-class UserViewModel (application: Application) :  AndroidViewModel(application) {
+class UserViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val tokenManager = TokenManager(application.applicationContext)
     private val userRepository = UserRepository(application)
 
     private val _postUserResult = MutableLiveData<Boolean>()
@@ -51,14 +53,13 @@ class UserViewModel (application: Application) :  AndroidViewModel(application) 
 
     private fun refreshDataFromNetwork() {
         try {
-            viewModelScope.launch (Dispatchers.Default){
-                withContext(Dispatchers.IO){
+            viewModelScope.launch(Dispatchers.Default) {
+                withContext(Dispatchers.IO) {
                 }
                 _eventNetworkError.postValue(false)
                 _isNetworkErrorShown.postValue(false)
             }
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             _eventNetworkError.value = true
         }
     }
@@ -73,35 +74,35 @@ class UserViewModel (application: Application) :  AndroidViewModel(application) 
         }
     }
 
-    fun postUser(userObject: JSONObject){
+    fun postUser(userObject: JSONObject) {
         viewModelScope.launch {
             try {
                 userRepository.saveData(userObject)
                 _postUserResult.value = true
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _postUserResult.value = false
             }
         }
     }
 
-
-    fun authenticateUser(userObject: JSONObject){
+    fun authenticateUser(userObject: JSONObject) {
         viewModelScope.launch {
             try {
                 val tokenInfo = userRepository.authUser(userObject)
+                tokenManager.saveToken(tokenInfo.token)
                 _authUserResult.value = tokenInfo
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _authUserResult.value = TokenInfo("", "", "")
             }
         }
     }
 
-    fun validateToken(token: String){
+    fun validateToken(token: String) {
         viewModelScope.launch {
             try {
                 val userInfo = userRepository.validateToken(token)
                 _tokenUserResult.value = userInfo
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _tokenUserResult.value = null
             }
         }

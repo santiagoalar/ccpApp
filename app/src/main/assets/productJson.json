@@ -1,0 +1,32 @@
+[
+  {
+    "id": "P001",
+    "characteristic": "Martillo",
+    "description": "Producto ecológico para el hogar",
+    "storageConditions": "Mantener en lugar seco",
+    "deliveryTime": "2-3 días hábiles",
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8a8rK8IP8yXc9QctfyG6cnQOggeJH3Uw7_r8gl7UAyDdCVz3Mir7hZelDXop5PtPEVJZsLOm4enElrr7oQm-LebbK_o-0mBNQu_Tfeyg",
+    "commercialConditions": "Garantía de 6 meses",
+    "quantity": 15
+  },
+  {
+    "id": "P002",
+    "characteristic": "Resistente al agua",
+    "description": "Bolsa reutilizable para compras",
+    "storageConditions": "Evitar exposición al sol",
+    "deliveryTime": "5 días hábiles",
+    "imageUrl": "https://http2.mlstatic.com/D_NQ_NP_870235-MCO42703076308_072020-O.webp",
+    "commercialConditions": "Cambios hasta 30 días",
+    "quantity": 50
+  },
+  {
+    "id": "P003",
+    "characteristic": "Diseño ergonómico",
+    "description": "Botella térmica de acero inoxidable",
+    "storageConditions": "No lavar en lavavajillas",
+    "deliveryTime": "24 horas",
+    "imageUrl": "https://autopla1.b-cdn.net/wp-content/uploads/2020/09/MOBIL-SPECIAL_25W-50-Photoroom.jpg",
+    "commercialConditions": "Garantía de por vida",
+    "quantity": 8
+  }
+]
