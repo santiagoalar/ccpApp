@@ -66,6 +66,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
             val LAYOUT = R.layout.product_item
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(product: Product) {
             Glide.with(itemView)
                 .load(product.imageUrl.toUri().buildUpon().scheme("https").build())
@@ -75,6 +76,28 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
                         .error(R.drawable.ic_broken_image)
                 )
                 .into(viewDataBinding.imageProducto)
+
+            viewDataBinding.editQuantity.setText("0")
+
+            viewDataBinding.buttonPlus.setOnClickListener {
+                val current = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
+                val maxQuantity = product.quantity ?: 0
+                if (current < maxQuantity) {
+                    viewDataBinding.editQuantity.setText((current + 1).toString())
+                }
+            }
+
+            viewDataBinding.buttonMinus.setOnClickListener {
+                val current = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
+                if (current > 0) {
+                    viewDataBinding.editQuantity.setText((current - 1).toString())
+                }
+            }
+
+            viewDataBinding.buttonBuy.setOnClickListener {
+                val quantity = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
+                //onBuyClick(product, quantity)
+            }
         }
 
     }

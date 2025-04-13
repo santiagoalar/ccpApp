@@ -1,23 +1,25 @@
 package com.example.ccpapp.ui.client
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ProductAdapter
-import com.example.ccpapp.databinding.FragmentClientBinding
+import com.example.ccpapp.databinding.FragmentShoppingCartBinding
 import com.example.ccpapp.viewmodels.ProductViewModel
+import com.example.ccpapp.viewmodels.UserViewModel
 
-class ClientFragment : Fragment() {
+class ShoppingCartFragment : Fragment() {
 
-    private var _binding: FragmentClientBinding? = null
+    private var _binding: FragmentShoppingCartBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: ProductViewModel
@@ -29,40 +31,35 @@ class ClientFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentClientBinding.inflate(inflater, container, false)
+        _binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
         viewModelAdapter = ProductAdapter()
 
-        binding.buttonCart.setOnClickListener {
-            navc?.navigate(R.id.shoppingCartFragment)
+        binding.buttonBack.setOnClickListener{
+            Log.d("SHOPPING", "Si llega")
+            navc?.navigate(R.id.clientFragment)
         }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView = binding.recyclerViewProducts
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = viewModelAdapter
-        navc = Navigation.findNavController(view)
-
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onViewCreated()"
+        }
         viewModel = ViewModelProvider(
             this,
-            ProductViewModel.Factory(requireActivity().application)
-        ).get(ProductViewModel::class.java)
+            ProductViewModel.Factory(activity.application)
+        )[ProductViewModel::class.java]
+
+        navc = Navigation.findNavController(view)
+        //observeAuthUserResult(view)
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) onNetworkError()
         }
 
-        viewModel.products.observe(viewLifecycleOwner) { albums ->
-            albums?.let {
-                viewModelAdapter?.products = it
-            }
-        }
-
-        // Llama a la función para cargar los datos cuando se crea la vista
-        viewModel.refreshProducts()
     }
 
     override fun onDestroyView() {
@@ -71,10 +68,9 @@ class ClientFragment : Fragment() {
     }
 
     private fun onNetworkError() {
-        /*if (!viewModel.isNetworkErrorShown.value!!) {
+        if (!viewModel.isNetworkErrorShown.value!!) {
             Toast.makeText(activity, "Network Error", Toast.LENGTH_LONG).show()
             viewModel.onNetworkErrorShown()
-        }*/
+        }
     }
-
 }

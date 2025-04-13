@@ -165,7 +165,8 @@ class NetworkServiceAdapter(context: Context) {
                     deliveryTime = product.getString("deliveryTime"),
                     imageUrl = product.getString("imageUrl"),
                     commercialConditions = product.getString("commercialConditions"),
-                    quantity = product.getInt("quantity")
+                    quantity = product.getInt("quantity"),
+                    price = product.getInt("price")
                 )
 
             )

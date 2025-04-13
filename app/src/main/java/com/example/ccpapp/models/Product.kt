@@ -8,5 +8,6 @@ data class Product(
     val deliveryTime: String,
     val imageUrl: String,
     val commercialConditions: String,
-    val quantity: Int
+    val quantity: Int,
+    val price: Int
 )

@@ -89,7 +89,14 @@
                         android:id="@+id/textQuantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 0"
+                        android:text='@{"Cantidad: " + product.quantity}'
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/textPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text='@{"Precio: " + product.price}'
                         android:textColor="@android:color/holo_blue_dark"
                         android:textSize="12sp" />
 

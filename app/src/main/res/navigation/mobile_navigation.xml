@@ -34,5 +34,9 @@
         android:name="com.example.ccpapp.ui.client.CarrierFragment"
         android:label="CarrierFragment"
         tools:layout="@layout/fragment_carrier"/>
+    <fragment
+        android:id="@+id/shoppingCartFragment"
+        android:name="com.example.ccpapp.ui.client.ShoppingCartFragment"
+        android:label="ShoppingCartFragment" />
 
 </navigation>
