@@ -11,9 +11,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ProductItemBinding
+import com.example.ccpapp.models.CartItem
 import com.example.ccpapp.models.Product
 
-class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
+    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     var products: List<Product> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
@@ -42,7 +44,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) : RecyclerV
         return ProductViewHolder(withDataBinding, onBuyClick)
     }
 
-    override fun onBindViewHolder(holder:ProductViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         holder.viewDataBinding.also {
             it.product = products[position]
         }
@@ -59,8 +61,10 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) : RecyclerV
         return products.size
     }
 
-    class ProductViewHolder(val viewDataBinding: ProductItemBinding,
-                            private val onBuyClick: (Product, Int) -> Unit) :
+    class ProductViewHolder(
+        val viewDataBinding: ProductItemBinding,
+        private val onBuyClick: (Product, Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(viewDataBinding.root) {
         companion object {
             @LayoutRes
@@ -99,7 +103,15 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) : RecyclerV
                 val quantity = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
                 if (quantity > 0) {
                     onBuyClick(product, quantity)
-                    CartStorage.addItem(product)
+                    CartStorage.addItem(
+                        CartItem(
+                            id = product.id,
+                            characteristic = product.characteristic,
+                            quantity = quantity,
+                            unitPrice = product.price,
+                            totalPrice = product.price * quantity
+                        )
+                    )
                     //binding.cartBadge.visibility = View.VISIBLE
                     //viewDataBinding.cart
                 }
@@ -111,20 +123,20 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) : RecyclerV
     object CartStorage {
         //data class CartItem(val productId: String, val quantity: Int, val price: Int)
 
-        private val items = mutableListOf<Product>()
+        private val items = mutableListOf<CartItem>()
 
-        fun addItem(product: Product) {
-            val existing = items.find { it.id == product.id }
+        fun addItem(cartItem: CartItem) {
+            val existing = items.find { it.id == cartItem.id }
             if (existing != null) {
                 // Si ya existe, actualiza la cantidad
                 items.remove(existing)
-                items.add(existing.copy(quantity = existing.quantity + 1000)) //TODO Ojo que era una actualización pero no se de donde viene
+                items.add(existing.copy(quantity = existing.quantity + cartItem.quantity)) //TODO Ojo que era una actualización pero no se de donde viene
             } else {
-                items.add(product)
+                items.add(cartItem)
             }
         }
 
-        fun getItems(): List<Product> = items.toList()
+        fun getItems(): List<CartItem> = items.toList()
 
         fun clearCart() {
             items.clear()

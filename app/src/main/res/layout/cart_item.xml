@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="12dp">
 
+    <!-- Nombre del producto -->
     <TextView
         android:id="@+id/textProductName"
         android:layout_width="0dp"
@@ -13,26 +14,71 @@
         android:text="Nombre del producto"
         android:textSize="18sp"
         android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonDelete"
+        app:layout_constraintBottom_toTopOf="@id/textProductPrice"/>
+
+    <!-- Botón eliminar -->
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_remove"
+        android:contentDescription="Eliminar"
+        app:tint="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Precio del producto -->
     <TextView
         android:id="@+id/textProductPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Precio"
         android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/textProductName"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
+    <!-- Botón disminuir cantidad -->
+    <ImageButton
+        android:id="@+id/buttonDecrease"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_line"
+        android:contentDescription="Disminuir"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toEndOf="@id/textProductPrice"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textProductName"
+        android:layout_marginStart="16dp"/>
+
+    <!-- Cantidad -->
     <TextView
         android:id="@+id/textProductQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cantidad"
+        android:text="1"
         android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/buttonDecrease"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textProductName"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginHorizontal="8dp"/>
+
+    <!-- Botón aumentar cantidad -->
+    <ImageButton
+        android:id="@+id/buttonIncrease"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_add"
+        android:contentDescription="Aumentar"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toEndOf="@id/textProductQuantity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textProductName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

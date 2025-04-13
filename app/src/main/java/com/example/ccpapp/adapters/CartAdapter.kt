@@ -5,19 +5,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.databinding.CartItemBinding
-import com.example.ccpapp.models.Product
+import com.example.ccpapp.models.CartItem
 
-class CartAdapter(private val cartItems: List<Product>) :
+class CartAdapter(private val cartItems: List<CartItem>) :
     RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     class CartViewHolder(private val binding: CartItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun bind(product: Product) {
-            binding.textProductName.text = product.characteristic
-            binding.textProductPrice.text = "$${product.price}"
-            binding.textProductQuantity.text = "Cantidad: ${product.quantity}"
+        fun bind(cartItem: CartItem) {
+            binding.textProductName.text = cartItem.characteristic
+            binding.textProductPrice.text = "$${cartItem.totalPrice}"
+            binding.textProductQuantity.text = "Cantidad: ${cartItem.quantity}"
         }
     }
 
