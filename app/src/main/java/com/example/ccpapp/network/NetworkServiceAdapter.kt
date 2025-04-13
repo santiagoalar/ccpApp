@@ -7,9 +7,11 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ccpapp.constants.StaticConstants
+import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.Rol
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
+import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -26,9 +28,10 @@ class NetworkServiceAdapter(context: Context) {
         }
     }
 
+    private val appContext = context.applicationContext
+
     private val requestQueue: RequestQueue by lazy {
-        // applicationContext keeps you from leaking the Activity or BroadcastReceiver if someone passes one in.
-        Volley.newRequestQueue(context.applicationContext)
+        Volley.newRequestQueue(appContext)
     }
 
     suspend fun postUser(userJson: JSONObject) = suspendCoroutine<Unit> { cont ->
@@ -79,7 +82,7 @@ class NetworkServiceAdapter(context: Context) {
     suspend fun getUser(token: String): User = suspendCoroutine { cont ->
         val url = "${StaticConstants.API_BASE_URL}users/me"
 
-        val request = object : JsonObjectRequest(Method.GET, url, null,
+        val request = object : JsonObjectRequest(Request.Method.GET, url, null,
             { response ->
                 try {
                     val user = User(
@@ -105,13 +108,71 @@ class NetworkServiceAdapter(context: Context) {
                 return headers
             }
         }
-
-        // Suponiendo que tienes una instancia del requestQueue (por ejemplo desde NetworkServiceAdapter)
         requestQueue.add(request)
-
     }
 
+    suspend fun getProducts(token: String): List<Product> = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}products"
 
+        val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
+            try {
+                val productJson = JSONArray(response)
+                val productList = parseProductList(productJson)
+                cont.resume(productList)
+            } catch (e: Exception) {
+                try {
+                    val fallbackJson = readJsonFromAssets(appContext, "productJson.json")
+                    val fallbackArray = JSONArray(fallbackJson)
+                    val fallbackList = parseProductList(fallbackArray)
+                    cont.resume(fallbackList)
+                } catch (ex: Exception) {
+                    cont.resumeWithException(ex)
+                }
+            }
+        },
+            { error ->
+                try {
+                    val fallbackJson = readJsonFromAssets(appContext, "productJson.json")
+                    val fallbackArray = JSONArray(fallbackJson)
+                    val fallbackList = parseProductList(fallbackArray)
+                    cont.resume(fallbackList)
+                } catch (ex: Exception) {
+                    cont.resumeWithException(ex)
+                }
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+        requestQueue.add(request)
+    }
 
+    private fun parseProductList(jsonArray: JSONArray): List<Product> {
+        val productList = mutableListOf<Product>()
+        for (i in 0 until jsonArray.length()) {
+            val product = jsonArray.getJSONObject(i)
+            productList.add(
+                Product(
+                    id = product.getString("id"),
+                    characteristic = product.getString("characteristic"),
+                    description = product.getString("description"),
+                    storageConditions = product.getString("storageConditions"),
+                    deliveryTime = product.getString("deliveryTime"),
+                    imageUrl = product.getString("imageUrl"),
+                    commercialConditions = product.getString("commercialConditions"),
+                    quantity = product.getInt("quantity"),
+                    price = product.getInt("price")
+                )
 
+            )
+        }
+        return productList
+    }
+
+    private fun readJsonFromAssets(context: Context, filename: String): String {
+        return context.assets.open(filename).bufferedReader().use { it.readText() }
+    }
 }
