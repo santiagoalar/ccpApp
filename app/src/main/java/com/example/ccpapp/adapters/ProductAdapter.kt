@@ -13,7 +13,7 @@ import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ProductItemBinding
 import com.example.ccpapp.models.Product
 
-class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     var products: List<Product> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
@@ -39,7 +39,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
             parent,
             false
         )
-        return ProductViewHolder(withDataBinding)
+        return ProductViewHolder(withDataBinding, onBuyClick)
     }
 
     override fun onBindViewHolder(holder:ProductViewHolder, position: Int) {
@@ -59,7 +59,8 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
         return products.size
     }
 
-    class ProductViewHolder(val viewDataBinding: ProductItemBinding) :
+    class ProductViewHolder(val viewDataBinding: ProductItemBinding,
+                            private val onBuyClick: (Product, Int) -> Unit) :
         RecyclerView.ViewHolder(viewDataBinding.root) {
         companion object {
             @LayoutRes
@@ -96,9 +97,37 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
 
             viewDataBinding.buttonBuy.setOnClickListener {
                 val quantity = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
-                //onBuyClick(product, quantity)
+                if (quantity > 0) {
+                    onBuyClick(product, quantity)
+                    CartStorage.addItem(product)
+                    //binding.cartBadge.visibility = View.VISIBLE
+                    //viewDataBinding.cart
+                }
             }
         }
 
+    }
+
+    object CartStorage {
+        //data class CartItem(val productId: String, val quantity: Int, val price: Int)
+
+        private val items = mutableListOf<Product>()
+
+        fun addItem(product: Product) {
+            val existing = items.find { it.id == product.id }
+            if (existing != null) {
+                // Si ya existe, actualiza la cantidad
+                items.remove(existing)
+                items.add(existing.copy(quantity = existing.quantity + 1000)) //TODO Ojo que era una actualización pero no se de donde viene
+            } else {
+                items.add(product)
+            }
+        }
+
+        fun getItems(): List<Product> = items.toList()
+
+        fun clearCart() {
+            items.clear()
+        }
     }
 }

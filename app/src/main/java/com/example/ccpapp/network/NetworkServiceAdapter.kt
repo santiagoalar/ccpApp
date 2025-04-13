@@ -112,7 +112,6 @@ class NetworkServiceAdapter(context: Context) {
     }
 
     suspend fun getProducts(token: String): List<Product> = suspendCoroutine { cont ->
-        Log.d("PARSE PRODUCT", "Hola mundo")
         val url = "${StaticConstants.API_BASE_URL}products"
 
         val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
@@ -154,7 +153,6 @@ class NetworkServiceAdapter(context: Context) {
     private fun parseProductList(jsonArray: JSONArray): List<Product> {
         val productList = mutableListOf<Product>()
         for (i in 0 until jsonArray.length()) {
-            Log.d("PARSE PRODUCT", i.toString())
             val product = jsonArray.getJSONObject(i)
             productList.add(
                 Product(

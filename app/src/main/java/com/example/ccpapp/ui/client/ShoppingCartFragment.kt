@@ -1,7 +1,6 @@
 package com.example.ccpapp.ui.client
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +11,11 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
+import com.example.ccpapp.adapters.CartAdapter
 import com.example.ccpapp.adapters.ProductAdapter
 import com.example.ccpapp.databinding.FragmentShoppingCartBinding
+import com.example.ccpapp.models.Product
 import com.example.ccpapp.viewmodels.ProductViewModel
-import com.example.ccpapp.viewmodels.UserViewModel
 
 class ShoppingCartFragment : Fragment() {
 
@@ -23,8 +23,10 @@ class ShoppingCartFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: ProductViewModel
-    private var viewModelAdapter: ProductAdapter? = null
+    //private var viewModelAdapter: ProductAdapter? = null
     private var navc: NavController? = null
+    private val purchasedProducts = mutableListOf<Product>()
+    val cartItems = ProductAdapter.CartStorage.getItems()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,10 +34,13 @@ class ShoppingCartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
-        viewModelAdapter = ProductAdapter()
+        /*viewModelAdapter = ProductAdapter{ product, quantity ->
+            if (quantity > 0) {
+                purchasedProducts.add(product)
+            }
+        }*/
 
         binding.buttonBack.setOnClickListener{
-            Log.d("SHOPPING", "Si llega")
             navc?.navigate(R.id.clientFragment)
         }
 
@@ -55,6 +60,10 @@ class ShoppingCartFragment : Fragment() {
 
         navc = Navigation.findNavController(view)
         //observeAuthUserResult(view)
+
+        val cartItems = ProductAdapter.CartStorage.getItems()
+        val adapter = CartAdapter(cartItems)
+        binding.recyclerViewCartItems.adapter = adapter
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) onNetworkError()

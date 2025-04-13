@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ProductAdapter
 import com.example.ccpapp.databinding.FragmentClientBinding
+import com.example.ccpapp.models.Product
 import com.example.ccpapp.viewmodels.ProductViewModel
 
 class ClientFragment : Fragment() {
@@ -23,6 +24,7 @@ class ClientFragment : Fragment() {
     private lateinit var viewModel: ProductViewModel
     private var viewModelAdapter: ProductAdapter? = null
     private var navc: NavController? = null
+    private val purchasedProducts = mutableListOf<Product>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +32,15 @@ class ClientFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentClientBinding.inflate(inflater, container, false)
-        viewModelAdapter = ProductAdapter()
+
+        viewModelAdapter = ProductAdapter { product, quantity ->
+            if (quantity > 0) {
+                val price = product.price ?: 0.0
+                purchasedProducts.add(product)
+                // Mostrar el punto rojo sobre el icono del carrito
+                binding.cartBadge.visibility = View.VISIBLE
+            }
+        }
 
         binding.buttonCart.setOnClickListener {
             navc?.navigate(R.id.shoppingCartFragment)
