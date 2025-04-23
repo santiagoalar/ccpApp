@@ -15,7 +15,7 @@ class CartAdapter(private val cartItems: List<CartItem>) :
 
         @SuppressLint("SetTextI18n")
         fun bind(cartItem: CartItem) {
-            binding.textProductName.text = cartItem.characteristic
+            binding.textProductName.text = cartItem.name
             binding.textProductPrice.text = "$${cartItem.totalPrice}"
             binding.textProductQuantity.text = "Cantidad: ${cartItem.quantity}"
         }

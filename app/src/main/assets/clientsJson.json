@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "Jose Antonio Ruiz",
+    "phone": "3247948434",
+    "email": "jose@correo.com",
+    "address": "Calle 56"
+  },
+  {
+    "id": "2",
+    "name": "Camila Cantares",
+    "phone": "3247948434",
+    "email": "cami@correo.com",
+    "address": "Calle 56"
+  },
+  {
+    "id": "1",
+    "name": "Natalia Ibarra",
+    "phone": "3247948434",
+    "email": "nata@correo.com",
+    "address": "Calle 56"
+  }
+]

@@ -1,6 +1,7 @@
 package com.example.ccpapp.repositories
 
 import android.app.Application
+import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
 import com.example.ccpapp.network.NetworkServiceAdapter
@@ -19,4 +20,9 @@ class UserRepository(private val application: Application) {
     suspend fun validateToken(token: String): User {
         return NetworkServiceAdapter.getInstance(application).getUser(token)
     }
+
+    suspend fun getAllClients(token: String, sellerId: String): List<User> {
+        return NetworkServiceAdapter.getInstance(application).getClients(token, sellerId)
+    }
+
 }

@@ -21,9 +21,14 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val tokenManager = TokenManager(application.applicationContext)
     private val userRepository = UserRepository(application)
 
+    private val _clients = MutableLiveData<List<User>>()
     private val _postUserResult = MutableLiveData<Boolean>()
     private val _authUserResult = MutableLiveData<TokenInfo>()
     private val _tokenUserResult = MutableLiveData<User?>()
+
+    val clients: LiveData<List<User>>
+        get() = _clients
+
     val postUserResult: LiveData<Boolean>
         get() = _postUserResult
 
@@ -104,6 +109,20 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                 _tokenUserResult.value = userInfo
             } catch (e: Exception) {
                 _tokenUserResult.value = null
+            }
+        }
+    }
+
+    fun refreshClients(userId: String) {
+        viewModelScope.launch {
+            val token: String = tokenManager.getToken()
+            try {
+                val clientsList = userRepository.getAllClients(token, userId)
+                _clients.value = clientsList
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
+            } catch (e: Exception) {
+                _eventNetworkError.value = true
             }
         }
     }

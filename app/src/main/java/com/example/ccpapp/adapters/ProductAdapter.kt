@@ -74,7 +74,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         @SuppressLint("SetTextI18n")
         fun bind(product: Product) {
             Glide.with(itemView)
-                .load(product.imageUrl.toUri().buildUpon().scheme("https").build())
+                .load(product.images[0].toUri().buildUpon().scheme("https").build())
                 .apply(
                     RequestOptions()
                         .placeholder(R.drawable.loading_animation)
@@ -86,7 +86,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
 
             viewDataBinding.buttonPlus.setOnClickListener {
                 val current = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
-                val maxQuantity = product.quantity ?: 0
+                val maxQuantity = product.stock ?: 0
                 if (current < maxQuantity) {
                     viewDataBinding.editQuantity.setText((current + 1).toString())
                 }
@@ -106,7 +106,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
                     CartStorage.addItem(
                         CartItem(
                             id = product.id,
-                            characteristic = product.characteristic,
+                            name = product.name,
                             quantity = quantity,
                             unitPrice = product.price,
                             totalPrice = product.price * quantity
