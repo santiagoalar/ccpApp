@@ -84,7 +84,8 @@ class NetworkServiceAdapter(context: Context) {
     suspend fun getUser(token: String): User = suspendCoroutine { cont ->
         val url = "${StaticConstants.API_BASE_URL}users/me"
 
-        val request = object : JsonObjectRequest(Method.GET, url, null,
+        val request = object : JsonObjectRequest(
+            Method.GET, url, null,
             { response ->
                 try {
                     val user = User(
@@ -115,7 +116,8 @@ class NetworkServiceAdapter(context: Context) {
 
     suspend fun getProducts(token: String): List<Product> = suspendCoroutine { cont ->
         val url = StaticConstants.API_PRODUCT_BASE_URL
-        val request = object : JsonArrayRequest(Method.GET, url, null,
+        val request = object : JsonArrayRequest(
+            Method.GET, url, null,
             { response ->
                 try {
                     val productList = parseProductList(response)
@@ -168,7 +170,7 @@ class NetworkServiceAdapter(context: Context) {
                     price = product.getInt("price"),
                     deliveryTime = product.getInt("delivery_time"),
                     images = images,
-                    stock =  product.getInt("stock"),
+                    stock = product.getInt("stock"),
                     stockSelected = 0
                 )
             )
@@ -197,23 +199,24 @@ class NetworkServiceAdapter(context: Context) {
     suspend fun getClients(token: String, sellerId: String): List<User> = suspendCoroutine { cont ->
         val url =
             "${StaticConstants.API_BASE_URL}clients" //TODO cambiar por la original, agregar el sellerId
-        val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
-            try {
-                val clientJson = JSONArray(response)
-                val clientList = parseClientList(clientJson)
-                cont.resume(clientList)
-            } catch (e: Exception) {
+        val request = object : JsonObjectRequest(
+            Method.GET, url, null, { response ->
                 try {
-                    val fallbackJson = readJsonFromAssets(appContext, "clientsJson.json")
-                    val fallbackArray = JSONArray(fallbackJson)
-                    val fallbackList = parseClientList(fallbackArray)
-                    Log.d("SELLER ", fallbackList.size.toString())
-                    cont.resume(fallbackList)
-                } catch (ex: Exception) {
-                    cont.resumeWithException(ex)
+                    val clientJson = JSONArray(response)
+                    val clientList = parseClientList(clientJson)
+                    cont.resume(clientList)
+                } catch (e: Exception) {
+                    try {
+                        val fallbackJson = readJsonFromAssets(appContext, "clientsJson.json")
+                        val fallbackArray = JSONArray(fallbackJson)
+                        val fallbackList = parseClientList(fallbackArray)
+                        Log.d("SELLER ", fallbackList.size.toString())
+                        cont.resume(fallbackList)
+                    } catch (ex: Exception) {
+                        cont.resumeWithException(ex)
+                    }
                 }
-            }
-        },
+            },
             { error ->
                 try {
                     val fallbackJson = readJsonFromAssets(appContext, "clientsJson.json")
@@ -237,4 +240,30 @@ class NetworkServiceAdapter(context: Context) {
     private fun readJsonFromAssets(context: Context, filename: String): String {
         return context.assets.open(filename).bufferedReader().use { it.readText() }
     }
+
+    suspend fun postCartItems(token: String, cartItemsJson: JSONObject) =
+        suspendCoroutine<Unit> { cont ->
+            val url = "${StaticConstants.API_BASE_URL}orders/"
+
+            val request = object : JsonObjectRequest(
+                Method.POST, url, cartItemsJson,
+                { response ->
+                    cont.resume(Unit)
+                    Log.d("response", "Cart items posted successfully")
+                },
+                { error ->
+                    cont.resumeWithException(error)
+                    Log.d("response failed", error.message.toString())
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] = "Bearer $token"
+                    return headers
+                }
+            }
+
+            Log.d("request", request.toString())
+            requestQueue.add(request)
+        }
 }

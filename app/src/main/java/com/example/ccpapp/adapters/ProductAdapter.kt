@@ -103,7 +103,8 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
                             name = product.name,
                             quantity = quantity,
                             unitPrice = product.price,
-                            totalPrice = product.price * quantity
+                            totalPrice = product.price * quantity,
+                            maxStock = product.stock
                         )
                     )
                 }
@@ -116,6 +117,8 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         //data class CartItem(val productId: String, val quantity: Int, val price: Int)
 
         private val items = mutableListOf<CartItem>()
+        private val total: Int
+            get() = items.sumOf { it.totalPrice }
 
         fun addItem(cartItem: CartItem) {
             val existing = items.find { it.id == cartItem.id }
@@ -132,6 +135,10 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
 
         fun clearCart() {
             items.clear()
+        }
+
+        fun removeItem(productId: String) {
+            items.removeAll { it.id == productId }
         }
     }
 }
