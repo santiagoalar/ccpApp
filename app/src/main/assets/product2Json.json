@@ -20,6 +20,7 @@
     "name": "Camiseta deportiva Scott",
     "price": 15.99,
     "storage_conditions": "Lugar fresco y seco",
-    "updated_at": null
+    "updated_at": null,
+    "stock": 10
   }
 ]

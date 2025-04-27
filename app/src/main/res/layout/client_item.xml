@@ -67,7 +67,6 @@
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 
-                <!-- Dirección -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:backgroundTint="@color/holo_blue_dark"
-                        android:text="Detalle Cliente"
+                        android:text="Agrear detalles"
                         android:textAllCaps="false"
                         android:textColor="@android:color/white" />
 

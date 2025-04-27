@@ -209,7 +209,6 @@ class NetworkServiceAdapter(context: Context) {
                 cont.resume(clientList)
             } catch (e: Exception) {
                 try {
-                    Log.d("SELLER ", "No se encontraron")
                     val fallbackJson = readJsonFromAssets(appContext, "clientsJson.json")
                     val fallbackArray = JSONArray(fallbackJson)
                     val fallbackList = parseClientList(fallbackArray)
@@ -222,7 +221,6 @@ class NetworkServiceAdapter(context: Context) {
         },
             { error ->
                 try {
-                    Log.d("SELLER ", "No se encontraron2")
                     val fallbackJson = readJsonFromAssets(appContext, "clientsJson.json")
                     val fallbackArray = JSONArray(fallbackJson)
                     val fallbackList = parseClientList(fallbackArray)

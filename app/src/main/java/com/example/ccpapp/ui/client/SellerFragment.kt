@@ -12,12 +12,12 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ClientAdapter
-import com.example.ccpapp.adapters.ProductAdapter
 import com.example.ccpapp.databinding.FragmentSellerBinding
 import com.example.ccpapp.viewmodels.UserViewModel
 
-class SellerFragment: Fragment() {
+class SellerFragment: Fragment(), View.OnClickListener {
 
     private var _binding: FragmentSellerBinding? = null
     private val binding get() = _binding!!
@@ -25,6 +25,7 @@ class SellerFragment: Fragment() {
     private lateinit var viewModel: UserViewModel
     private var viewModelAdapter: ClientAdapter? = null
     private var navc: NavController?= null
+    private var clientId: Int?= null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,7 +75,16 @@ class SellerFragment: Fragment() {
             }
         }
 
-        // Llama a la función para cargar los datos cuando se crea la vista
         viewModel.refreshClients("SELLER-ID") //TODO cambiar por el user Id del vendedor
+
+        /*binding.textForgotPassword.setOnClickListener{v->
+            val navController = Navigation.findNavController(v)
+            navController.navigate(R.id.clientDetailFragment)
+        }*/
     }
+
+    override fun onClick(v: View?) {
+        navc?.navigate(R.id.action_sellerFragment_to_clientDetailFragment)
+    }
+
 }

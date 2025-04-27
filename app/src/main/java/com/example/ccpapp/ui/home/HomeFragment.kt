@@ -48,8 +48,9 @@ class HomeFragment : Fragment() {
 
         binding.textForgotPassword.setOnClickListener{v->
             val navController = findNavController(v)
-            navController.navigate(R.id.clientFragment)
-
+            //navController.navigate(R.id.clientFragment)
+            //TODO esto es experimental
+            navController.navigate(R.id.clientDetailFragment)
         }
         return binding.root
     }
