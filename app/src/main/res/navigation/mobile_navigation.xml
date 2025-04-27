@@ -26,7 +26,7 @@
         tools:layout="@layout/fragment_seller">
         <action
             android:id="@+id/action_sellerFragment_to_clientDetailFragment"
-            app:destination="@id/clientFragment" />
+            app:destination="@id/clientDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/directorFragment"
@@ -45,6 +45,10 @@
     <fragment
         android:id="@+id/clientDetailFragment"
         android:name="com.example.ccpapp.ui.client.ClientDetailFragment"
-        android:label="ClientDetailFragment" />
+        android:label="ClientDetailFragment">
+        <argument
+            android:name="clientId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

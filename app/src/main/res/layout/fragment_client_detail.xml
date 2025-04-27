@@ -65,7 +65,6 @@
                 android:gravity="end"/>
         </LinearLayout>
 
-        <!-- Correo y Dirección en horizontal -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -166,7 +165,6 @@
                 android:gravity="end"/>
         </LinearLayout>
 
-        <!-- Título Recomendaciones -->
         <TextView
             android:id="@+id/tvRecommendationsTitle"
             android:layout_width="wrap_content"
@@ -177,7 +175,6 @@
             android:textColor="@color/white"
             android:layout_marginTop="32dp"/>
 
-        <!-- Texto fijo de recomendación -->
         <TextView
             android:id="@+id/tvRecommendationContent"
             android:layout_width="match_parent"
@@ -187,8 +184,7 @@
             android:textStyle="italic"
             android:textColor="@color/white"
             android:layout_marginTop="8dp"/>
-
-        <!-- Botón para grabar video -->
+¿
         <Button
             android:id="@+id/btnRecordVideo"
             android:layout_width="match_parent"

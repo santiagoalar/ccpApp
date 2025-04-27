@@ -70,17 +70,13 @@ class SellerFragment: Fragment(), View.OnClickListener {
 
         viewModel.clients.observe(viewLifecycleOwner) { clients ->
             Log.d("SELLER in FRAG", clients.size.toString())
-            clients?.let {
-                viewModelAdapter?.clients = it
+            clients.apply {
+                viewModelAdapter!!.clients = this
             }
         }
 
         viewModel.refreshClients("SELLER-ID") //TODO cambiar por el user Id del vendedor
 
-        /*binding.textForgotPassword.setOnClickListener{v->
-            val navController = Navigation.findNavController(v)
-            navController.navigate(R.id.clientDetailFragment)
-        }*/
     }
 
     override fun onClick(v: View?) {

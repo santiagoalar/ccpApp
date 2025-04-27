@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ClientItemBinding
 import com.example.ccpapp.models.User
+import com.example.ccpapp.ui.client.ClientDetailFragment
+import com.example.ccpapp.ui.client.SellerFragmentDirections
 
 class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
 
@@ -45,12 +48,16 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
             it.client = clients[position]
         }
         holder.bind(clients[position])
-        //holder.viewDataBinding.root.setOnClickListener {
-        //val action =
-        //AlbumFragmentDirections.actionAlbumFragmentToTrackFragment(albums[position].albumId)
-        // Navigate using that action
-        //holder.viewDataBinding.root.findNavController().navigate(action)
-        //}
+        holder.binding.root.setOnClickListener {
+            val action = SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
+            //Navigate using that action
+            holder.binding.root.findNavController().navigate(action)
+        }
+        holder.binding.buttonAddDetail.setOnClickListener{
+            val action = SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
+            //Navigate using that action
+            holder.binding.root.findNavController().navigate(action)
+        }
     }
 
     class ClientViewHolder(val binding: ClientItemBinding) :

@@ -46,12 +46,10 @@ class HomeFragment : Fragment() {
             viewModel.authenticateUser(jsonBody)
         }
 
-        binding.textForgotPassword.setOnClickListener{v->
+        /*binding.textForgotPassword.setOnClickListener{v->
             val navController = findNavController(v)
-            //navController.navigate(R.id.clientFragment)
-            //TODO esto es experimental
-            navController.navigate(R.id.clientDetailFragment)
-        }
+            navController.navigate(R.id.clientFragment)
+        }*/
         return binding.root
     }
 
