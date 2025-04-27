@@ -49,12 +49,6 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
             it.product = products[position]
         }
         holder.bind(products[position])
-        /*holder.viewDataBinding.root.setOnClickListener {
-            val action =
-                AlbumFragmentDirections.actionAlbumFragmentToTrackFragment(albums[position].albumId)
-            // Navigate using that action
-            holder.viewDataBinding.root.findNavController().navigate(action)
-        }*/
     }
 
     override fun getItemCount(): Int {
@@ -112,8 +106,6 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
                             totalPrice = product.price * quantity
                         )
                     )
-                    //binding.cartBadge.visibility = View.VISIBLE
-                    //viewDataBinding.cart
                 }
             }
         }

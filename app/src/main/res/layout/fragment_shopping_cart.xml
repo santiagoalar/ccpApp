@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <!-- Botón Atrás -->
     <ImageButton
         android:id="@+id/buttonBack"
         android:layout_width="32dp"
@@ -20,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:tint="@android:color/black" />
 
-    <!-- Título -->
     <TextView
         android:id="@+id/titleCart"
         android:layout_width="wrap_content"

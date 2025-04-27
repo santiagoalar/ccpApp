@@ -38,7 +38,6 @@ class ClientFragment : Fragment() {
             if (quantity > 0) {
                 val price = product.price ?: 0.0
                 purchasedProducts.add(product)
-                // Mostrar el punto rojo sobre el icono del carrito
                 binding.cartBadge.visibility = View.VISIBLE
             }
         }
@@ -65,12 +64,6 @@ class ClientFragment : Fragment() {
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) onNetworkError()
         }
-
-        /*viewModel.products.observe(viewLifecycleOwner) { albums ->
-            albums?.let {
-                viewModelAdapter?.products = it
-            }
-        }*/
 
         viewModel.products.observe(viewLifecycleOwner) { products ->
             products?.let {
