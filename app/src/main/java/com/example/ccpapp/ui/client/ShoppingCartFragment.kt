@@ -44,6 +44,10 @@ class ShoppingCartFragment : Fragment() {
             navc?.navigate(R.id.clientFragment)
         }
 
+        binding.buttonCheckout.setOnClickListener{
+            
+        }
+
         return binding.root
     }
 

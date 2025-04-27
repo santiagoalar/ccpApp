@@ -130,7 +130,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
             if (existing != null) {
                 // Si ya existe, actualiza la cantidad
                 items.remove(existing)
-                items.add(existing.copy(quantity = existing.quantity + cartItem.quantity)) //TODO Ojo que era una actualización pero no se de donde viene
+                items.add(existing.copy(quantity = cartItem.quantity))
             } else {
                 items.add(cartItem)
             }

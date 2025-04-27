@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:gravity="center"
-                    android:text="0"
+                    android:text='@{String.valueOf(product.stockSelected)}'
                     android:layout_marginHorizontal="8dp"
                     android:enabled="false"
                     android:background="@null" />
@@ -138,7 +138,7 @@
                     android:id="@+id/buttonBuy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Comprar"
+                    android:text="Agregar"
                     android:layout_marginStart="16dp" />
             </LinearLayout>
         </LinearLayout>

@@ -118,8 +118,6 @@ class NetworkServiceAdapter(context: Context) {
         val request = object : JsonArrayRequest(Method.GET, url, null,
             { response ->
                 try {
-                    Log.d("RESPONSE", response.toString())
-                    //val productJson = JSONArray(response)
                     val productList = parseProductList(response)
                     cont.resume(productList)
                 } catch (e: Exception) {
@@ -128,9 +126,6 @@ class NetworkServiceAdapter(context: Context) {
             },
             { error ->
                 try {
-                    Log.d("PRODUCT ERROR2", error.message.toString())
-                    Log.d("PRODUCT ERROR2", error.toString())
-                    Log.d("PRODUCT ERROR2", "si llegó")
                     val fallbackJson = readJsonFromAssets(appContext, "product2Json.json")
                     val fallbackArray = JSONArray(fallbackJson)
                     val fallbackList = parseProductList(fallbackArray)
@@ -173,7 +168,8 @@ class NetworkServiceAdapter(context: Context) {
                     price = product.getInt("price"),
                     deliveryTime = product.getInt("delivery_time"),
                     images = images,
-                    stock =  product.getInt("stock")
+                    stock =  product.getInt("stock"),
+                    stockSelected = 0
                 )
             )
         }
@@ -201,7 +197,6 @@ class NetworkServiceAdapter(context: Context) {
     suspend fun getClients(token: String, sellerId: String): List<User> = suspendCoroutine { cont ->
         val url =
             "${StaticConstants.API_BASE_URL}clients" //TODO cambiar por la original, agregar el sellerId
-        Log.d("SELLER ", "Vamos a taer los usuarios")
         val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
             try {
                 val clientJson = JSONArray(response)
