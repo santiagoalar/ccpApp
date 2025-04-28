@@ -2,8 +2,9 @@ package com.example.ccpapp.models
 
 data class CartItem(
     val id: String,
-    val characteristic: String,
-    val quantity: Int,
+    val name: String,
+    var quantity: Int,
     val unitPrice: Int,
-    val totalPrice: Int
+    var totalPrice: Int,
+    val maxStock: Int,
 )

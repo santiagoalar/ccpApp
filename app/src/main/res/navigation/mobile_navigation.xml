@@ -23,7 +23,11 @@
         android:id="@+id/sellerFragment"
         android:name="com.example.ccpapp.ui.client.SellerFragment"
         android:label="fragment_director"
-        tools:layout="@layout/fragment_seller" />
+        tools:layout="@layout/fragment_seller">
+        <action
+            android:id="@+id/action_sellerFragment_to_clientDetailFragment"
+            app:destination="@id/clientDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/directorFragment"
         android:name="com.example.ccpapp.ui.client.DirectorFragment"
@@ -33,10 +37,18 @@
         android:id="@+id/carrierFragment"
         android:name="com.example.ccpapp.ui.client.CarrierFragment"
         android:label="CarrierFragment"
-        tools:layout="@layout/fragment_carrier"/>
+        tools:layout="@layout/fragment_carrier" />
     <fragment
         android:id="@+id/shoppingCartFragment"
         android:name="com.example.ccpapp.ui.client.ShoppingCartFragment"
         android:label="ShoppingCartFragment" />
+    <fragment
+        android:id="@+id/clientDetailFragment"
+        android:name="com.example.ccpapp.ui.client.ClientDetailFragment"
+        android:label="ClientDetailFragment">
+        <argument
+            android:name="clientId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

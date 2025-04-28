@@ -25,6 +25,7 @@ class ClientFragment : Fragment() {
     private var viewModelAdapter: ProductAdapter? = null
     private var navc: NavController? = null
     private val purchasedProducts = mutableListOf<Product>()
+    val cartItems = ProductAdapter.CartStorage.getItems()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +38,6 @@ class ClientFragment : Fragment() {
             if (quantity > 0) {
                 val price = product.price ?: 0.0
                 purchasedProducts.add(product)
-                // Mostrar el punto rojo sobre el icono del carrito
                 binding.cartBadge.visibility = View.VISIBLE
             }
         }
@@ -65,13 +65,20 @@ class ClientFragment : Fragment() {
             if (isNetworkError) onNetworkError()
         }
 
-        viewModel.products.observe(viewLifecycleOwner) { albums ->
-            albums?.let {
-                viewModelAdapter?.products = it
+        viewModel.products.observe(viewLifecycleOwner) { products ->
+            products?.let {
+                val updatedProducts = it.map { product ->
+                    val matchingProductSelected = cartItems.find { selected ->
+                        selected.id == product.id
+                    }
+                    product.copy(
+                        stockSelected = matchingProductSelected?.quantity ?: 0
+                    )
+                }
+                viewModelAdapter?.products = updatedProducts
             }
         }
 
-        // Llama a la función para cargar los datos cuando se crea la vista
         viewModel.refreshProducts()
     }
 

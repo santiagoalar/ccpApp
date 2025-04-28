@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <!-- Botón Atrás -->
     <ImageButton
         android:id="@+id/buttonBack"
         android:layout_width="32dp"
@@ -20,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:tint="@android:color/black" />
 
-    <!-- Título -->
     <TextView
         android:id="@+id/titleCart"
         android:layout_width="wrap_content"
@@ -78,6 +76,42 @@
             android:textColor="@color/white"
             android:backgroundTint="@color/holo_blue_dark"
             android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Layout de éxito -->
+    <LinearLayout
+        android:id="@+id/successLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/imageSuccess"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:contentDescription="Compra exitosa" />
+
+        <TextView
+            android:id="@+id/textSuccessMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Compra exitosa"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/buttonAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aceptar"
+            android:textAllCaps="false"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/holo_blue_dark"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

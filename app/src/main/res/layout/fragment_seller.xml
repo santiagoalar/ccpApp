@@ -23,13 +23,27 @@
 
     <!-- Subtítulo: Productos -->
     <TextView
-        android:id="@+id/subtitleProductos"
+        android:id="@+id/subtitleClients"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Productos"
+        android:text="Mis clientes"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         app:layout_constraintTop_toBottomOf="@id/titleSeller"
         app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewClients"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:overScrollMode="always"
+        android:paddingTop="16dp"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitleClients" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

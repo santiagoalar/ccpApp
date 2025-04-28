@@ -1,0 +1,26 @@
+[
+  {
+    "brand": "Adidas",
+    "created_at": "2025-04-22T05:06:54.120076",
+    "currency": "USD",
+    "delivery_time": 3,
+    "description": "Camiseta elástica con material fresco",
+    "details": {
+      "color": "Rojo",
+      "material": "Algodón",
+      "talla": "L"
+    },
+    "id": "3ac5161e-b3c0-4ce4-81d9-a4af5263b7f3",
+    "images": [
+      "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/c24cc9e967304389a41f81f5d92dd9d6_9366/Camiseta_Adicolor_Trifolio_Boxy_Rojo_IY4690_21_model.jpg",
+      "url_de_la_segunda_fotografia",
+      "url_de_la_tercera_fotografia"
+    ],
+    "manufacturer_id": "f7269e92-acb2-49f8-b655-7a1be3d0a9f8",
+    "name": "Camiseta deportiva Scott",
+    "price": 15.99,
+    "storage_conditions": "Lugar fresco y seco",
+    "updated_at": null,
+    "stock": 10
+  }
+]

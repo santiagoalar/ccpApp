@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="fucsia">#F0FA3E7F</color>
     <color name="holo_blue_dark">#ff0099cc</color>
+    <color name="holo_green_dark">#ff669900</color>
 
 </resources>

@@ -2,12 +2,15 @@ package com.example.ccpapp.models
 
 data class Product(
     val id: String,
-    val characteristic: String,
+    val name: String,
     val description: String,
+    val details: Map<String, String>,
     val storageConditions: String,
-    val deliveryTime: String,
-    val imageUrl: String,
-    val commercialConditions: String,
-    val quantity: Int,
-    val price: Int
-)
+    val price: Int,
+    val deliveryTime: Int,
+    val images: List<String>,
+    val stock: Int,
+    val stockSelected: Int
+) {
+
+}

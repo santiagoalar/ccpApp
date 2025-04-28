@@ -49,12 +49,6 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
             it.product = products[position]
         }
         holder.bind(products[position])
-        /*holder.viewDataBinding.root.setOnClickListener {
-            val action =
-                AlbumFragmentDirections.actionAlbumFragmentToTrackFragment(albums[position].albumId)
-            // Navigate using that action
-            holder.viewDataBinding.root.findNavController().navigate(action)
-        }*/
     }
 
     override fun getItemCount(): Int {
@@ -74,7 +68,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         @SuppressLint("SetTextI18n")
         fun bind(product: Product) {
             Glide.with(itemView)
-                .load(product.imageUrl.toUri().buildUpon().scheme("https").build())
+                .load(product.images[0].toUri().buildUpon().scheme("https").build())
                 .apply(
                     RequestOptions()
                         .placeholder(R.drawable.loading_animation)
@@ -86,7 +80,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
 
             viewDataBinding.buttonPlus.setOnClickListener {
                 val current = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
-                val maxQuantity = product.quantity ?: 0
+                val maxQuantity = product.stock ?: 0
                 if (current < maxQuantity) {
                     viewDataBinding.editQuantity.setText((current + 1).toString())
                 }
@@ -106,14 +100,13 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
                     CartStorage.addItem(
                         CartItem(
                             id = product.id,
-                            characteristic = product.characteristic,
+                            name = product.name,
                             quantity = quantity,
                             unitPrice = product.price,
-                            totalPrice = product.price * quantity
+                            totalPrice = product.price * quantity,
+                            maxStock = product.stock
                         )
                     )
-                    //binding.cartBadge.visibility = View.VISIBLE
-                    //viewDataBinding.cart
                 }
             }
         }
@@ -124,22 +117,34 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         //data class CartItem(val productId: String, val quantity: Int, val price: Int)
 
         private val items = mutableListOf<CartItem>()
+        private var userId:String = ""
+        private val total: Int
+            get() = items.sumOf { it.totalPrice }
 
         fun addItem(cartItem: CartItem) {
             val existing = items.find { it.id == cartItem.id }
             if (existing != null) {
                 // Si ya existe, actualiza la cantidad
                 items.remove(existing)
-                items.add(existing.copy(quantity = existing.quantity + cartItem.quantity)) //TODO Ojo que era una actualización pero no se de donde viene
+                items.add(existing.copy(quantity = cartItem.quantity))
             } else {
                 items.add(cartItem)
             }
         }
 
+        fun addUserId(userId: String) {
+            this.userId = userId
+        }
+
+        fun getUserId(): String = userId
         fun getItems(): List<CartItem> = items.toList()
 
         fun clearCart() {
             items.clear()
+        }
+
+        fun removeItem(productId: String) {
+            items.removeAll { it.id == productId }
         }
     }
 }
