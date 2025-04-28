@@ -65,7 +65,7 @@
                         android:id="@+id/textStorageConditions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Condiciones de almacenamiento, Condiciones de almacenamiento , Condiciones de almacenamiento, Condiciones de almacenamiento"
+                        android:text='@{"Condiciones de almacenamiento: "+ product.storageConditions}'
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp" />
 
@@ -73,17 +73,17 @@
                         android:id="@+id/textDeliveryTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tiempo de entrega"
+                        android:text='@{"Tiempo de entrega: "+ product.deliveryTime + " días"}'
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp" />
 
-                    <TextView
+                    <!--TextView
                         android:id="@+id/textCommercialConditions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Condiciones comerciales"
+                        android:text='@{"Condiciones comerciales"+ product.commercialConditions}'
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp" /-->
 
                     <TextView
                         android:id="@+id/textQuantity"
@@ -96,7 +96,7 @@
                         android:id="@+id/textPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text='@{"Precio: " + product.price}'
+                        android:text='@{"Precio: $" + product.price}'
                         android:textColor="@android:color/holo_blue_dark"
                         android:textSize="12sp" />
 

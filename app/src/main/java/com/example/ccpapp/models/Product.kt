@@ -4,7 +4,7 @@ data class Product(
     val id: String,
     val name: String,
     val description: String,
-    val details: ProductDetail,
+    val details: Map<String, String>,
     val storageConditions: String,
     val price: Int,
     val deliveryTime: Int,

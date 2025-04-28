@@ -94,7 +94,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val tokenInfo = userRepository.authUser(userObject)
-                tokenManager.saveToken(tokenInfo.token)
+                tokenManager.saveUserInfo(tokenInfo)
                 _authUserResult.value = tokenInfo
             } catch (e: Exception) {
                 _authUserResult.value = TokenInfo("", "", "")

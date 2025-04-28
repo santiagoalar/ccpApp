@@ -161,11 +161,9 @@ class NetworkServiceAdapter(context: Context) {
                     id = product.getString("id"),
                     name = product.getString("name"),
                     description = product.getString("description"),
-                    details = ProductDetail(
-                        color = detailsObject.getString("color"),
-                        talla = detailsObject.getString("talla"),
-                        material = detailsObject.getString("material")
-                    ),
+                    details = detailsObject.keys().asSequence().associateWith { key ->
+                        detailsObject.getString(key)
+                    },
                     storageConditions = product.getString("storage_conditions"),
                     price = product.getInt("price"),
                     deliveryTime = product.getInt("delivery_time"),

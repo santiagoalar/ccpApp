@@ -117,6 +117,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         //data class CartItem(val productId: String, val quantity: Int, val price: Int)
 
         private val items = mutableListOf<CartItem>()
+        private var userId:String = ""
         private val total: Int
             get() = items.sumOf { it.totalPrice }
 
@@ -131,6 +132,11 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
             }
         }
 
+        fun addUserId(userId: String) {
+            this.userId = userId
+        }
+
+        fun getUserId(): String = userId
         fun getItems(): List<CartItem> = items.toList()
 
         fun clearCart() {
