@@ -21,6 +21,7 @@ import com.example.ccpapp.viewmodels.CartItemViewModel
 import com.example.ccpapp.viewmodels.ProductViewModel
 import org.json.JSONObject
 import com.bumptech.glide.Glide
+import com.example.ccpapp.adapters.ProductAdapter.CartStorage
 import com.example.ccpapp.network.TokenManager
 
 class ShoppingCartFragment : Fragment() {
@@ -69,17 +70,17 @@ class ShoppingCartFragment : Fragment() {
                     put("amount", subtotal)
                     put("cardNumber", "4111111111111111")
                     put("cvv", "123")
-                    put("expiryDate", "12/25")
+                    put("expiryDate", "1225")
                     put("currency", "USD")
                 })
-                put("orderDetails", cartItems.map { product ->
-                    mapOf(
-                        "productId" to product.id,
-                        "quantity" to product.quantity,
-                        "unitPrice" to product.unitPrice,
-                        "totalPrice" to product.totalPrice,
-                        "currency" to "USD"
-                    )
+                put("orderDetails", cartItems.fold(org.json.JSONArray()) { array, product ->
+                    array.put(JSONObject().apply {
+                        put("productId", product.id)
+                        put("quantity", product.quantity)
+                        put("unitPrice", product.unitPrice)
+                        put("totalPrice", product.totalPrice)
+                        put("currency", "USD")
+                    })
                 })
             }
             Log.d("Purchase ", jsonBody.toString())
@@ -95,6 +96,7 @@ class ShoppingCartFragment : Fragment() {
                 .into(binding.imageSuccess)
 
             binding.buttonAccept.setOnClickListener {
+                CartStorage.clearCart()
                 navc?.navigate(R.id.clientFragment)
             }
         }

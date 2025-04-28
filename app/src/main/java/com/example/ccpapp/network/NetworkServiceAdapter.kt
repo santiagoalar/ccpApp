@@ -9,7 +9,6 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ccpapp.constants.StaticConstants
 import com.example.ccpapp.models.Product
-import com.example.ccpapp.models.ProductDetail
 import com.example.ccpapp.models.Rol
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
@@ -241,7 +240,7 @@ class NetworkServiceAdapter(context: Context) {
 
     suspend fun postCartItems(token: String, cartItemsJson: JSONObject) =
         suspendCoroutine<Unit> { cont ->
-            val url = "${StaticConstants.API_BASE_URL}orders/"
+            val url = "${StaticConstants.API_BASE_URL}clients/orders/"
 
             val request = object : JsonObjectRequest(
                 Method.POST, url, cartItemsJson,
