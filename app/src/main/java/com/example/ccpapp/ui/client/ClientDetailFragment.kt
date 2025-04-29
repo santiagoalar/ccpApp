@@ -1,5 +1,6 @@
 package com.example.ccpapp.ui.client
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -20,6 +21,7 @@ class ClientDetailFragment : Fragment() {
     private var _binding: FragmentClientDetailBinding? = null
     private val binding get() = _binding!!
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,6 +38,7 @@ class ClientDetailFragment : Fragment() {
                 val videoUri = result.data?.data
                 // Mostrar un mensaje cuando el video se haya guardado
                 Toast.makeText(requireContext(), "Video guardado: $videoUri", Toast.LENGTH_SHORT).show()
+                binding.tvRecommendationContent.text = "¡Tu video está siendo procesado en este momento, te traeremos recomendaciones de tu lugar muy pronto!"
             } else {
                 Toast.makeText(requireContext(), "No se grabó ningún video", Toast.LENGTH_SHORT).show()
             }

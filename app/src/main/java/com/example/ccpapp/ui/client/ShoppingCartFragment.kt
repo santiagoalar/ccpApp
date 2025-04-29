@@ -70,7 +70,7 @@ class ShoppingCartFragment : Fragment() {
                     put("amount", subtotal)
                     put("cardNumber", "4111111111111111")
                     put("cvv", "123")
-                    put("expiryDate", "1225")
+                    put("expiryDate", "12/25")
                     put("currency", "USD")
                 })
                 put("orderDetails", cartItems.fold(org.json.JSONArray()) { array, product ->
@@ -83,7 +83,6 @@ class ShoppingCartFragment : Fragment() {
                     })
                 })
             }
-            Log.d("Purchase ", jsonBody.toString())
             viewModelPurchase.savePurchase(jsonBody)
 
             binding.successLayout.isVisible = true

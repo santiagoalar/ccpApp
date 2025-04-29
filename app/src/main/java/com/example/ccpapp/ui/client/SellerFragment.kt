@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
@@ -57,7 +57,7 @@ class SellerFragment: Fragment(), View.OnClickListener {
         recyclerView = binding.recyclerViewClients
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = viewModelAdapter
-        navc = Navigation.findNavController(view)
+        navc = view.findNavController()
 
         viewModel = ViewModelProvider(
             this,
