@@ -90,4 +90,20 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
         }*/
 
     }
+
+    object UserStorage {
+        private val users = mutableListOf<User>()
+
+        fun addUser(user: User) {
+            users.add(user)
+        }
+
+        fun getUsers(): List<User> {
+            return users
+        }
+
+        fun clear() {
+            users.clear()
+        }
+    }
 }
