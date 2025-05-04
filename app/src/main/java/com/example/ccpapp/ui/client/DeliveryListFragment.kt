@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import com.example.ccpapp.databinding.FragmentListBinding
 
 
-class PurchaseListFragment : Fragment() {
+class DeliveryListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
     //private lateinit var viewModel: OrderViewModel
-    //private lateinit var adapter: PurchaseAdapter
+    //private lateinit var adapter: DeliveryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,23 +28,23 @@ class PurchaseListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         /*viewModel = ViewModelProvider(requireActivity())[OrderViewModel::class.java]
-        adapter = PurchaseAdapter()
+        adapter = DeliveryAdapter()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
-        viewModel.purchases.observe(viewLifecycleOwner) { purchases ->
-            adapter.setPurchases(purchases)
+        viewModel.deliveries.observe(viewLifecycleOwner) { deliveries ->
+            adapter.setDeliveries(deliveries)
             binding.progressBar.visibility = View.GONE
 
-            if (purchases.isEmpty()) {
+            if (deliveries.isEmpty()) {
                 binding.emptyView.visibility = View.VISIBLE
             } else {
                 binding.emptyView.visibility = View.GONE
             }
         }
 
-        viewModel.loadPurchases()*/
+        viewModel.loadDeliveries()*/
     }
 
     override fun onDestroyView() {

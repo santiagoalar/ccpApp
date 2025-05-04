@@ -29,7 +29,6 @@ class OrderFragment : Fragment() {
         val tabAdapter = OrderTabAdapter(this)
         binding.viewPager.adapter = tabAdapter
 
-        // Conectar el TabLayout con el ViewPager2
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Compras"
@@ -44,15 +43,13 @@ class OrderFragment : Fragment() {
         _binding = null
     }
 
-    // Adaptador para manejar los fragmentos de cada tab
     private class OrderTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = 2
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> PurchaseListFragment()
-                1 -> PurchaseListFragment()
-                //1 -> DeliveryListFragment() //TODO Ojo con esto
+                0 -> OrderListFragment()
+                1 -> DeliveryListFragment()
                 else -> throw IllegalStateException("Posición inválida $position")
             }
         }

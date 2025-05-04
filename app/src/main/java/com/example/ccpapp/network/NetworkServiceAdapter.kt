@@ -9,6 +9,7 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ccpapp.constants.StaticConstants
+import com.example.ccpapp.models.Order
 import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.Rol
 import com.example.ccpapp.models.TokenInfo
@@ -270,4 +271,54 @@ class NetworkServiceAdapter(context: Context) {
             Log.d("request", request.toString())
             requestQueue.add(request)
         }
+
+    suspend fun getOrders(token: String): List<Order> = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}clients/orders/"
+        val request = object : JsonArrayRequest(
+            Method.GET, url, null,
+            { response ->
+                try {
+                    val orderList = parseOrderList(response)
+                    cont.resume(orderList)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                try {
+                    val fallbackJson = readJsonFromAssets(appContext, "orderJson.json")
+                    val fallbackArray = JSONArray(fallbackJson)
+                    val fallbackList = parseOrderList(fallbackArray)
+                    cont.resume(fallbackList)
+                } catch (ex: Exception) {
+                    cont.resumeWithException(ex)
+                }
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+        requestQueue.add(request)
+    }
+
+    private fun parseOrderList(jsonArray: JSONArray): List<Order> {
+        val orderList = mutableListOf<Order>()
+        for (i in 0 until jsonArray.length()) {
+            val product = jsonArray.getJSONObject(i)
+            orderList.add(
+                Order(
+                    id = product.getString("id"),
+                    name = product.getString("name"),
+                    date = product.getString("date"),
+                    total = product.getInt("total"),
+                    clientId = product.getString("clientId")
+                )
+            )
+        }
+        return orderList
+    }
+
 }
