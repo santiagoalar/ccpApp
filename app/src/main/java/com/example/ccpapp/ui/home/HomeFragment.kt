@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.ccpapp.R
+import com.example.ccpapp.adapters.ClientAdapter.UserStorage
 import com.example.ccpapp.databinding.FragmentHomeBinding
 import com.example.ccpapp.viewmodels.UserViewModel
 import org.json.JSONObject
@@ -21,21 +22,24 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: UserViewModel
-    private var navc: NavController?= null
+    private var navc: NavController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreate(savedInstanceState)
+
+
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.textCreateAccount.setOnClickListener{ v ->
+        binding.textCreateAccount.setOnClickListener { v ->
             val navController = findNavController(v)
             navController.navigate(R.id.signUpFragment)
         }
 
-        binding.btnLogin.setOnClickListener{
+        binding.btnLogin.setOnClickListener {
             val email = binding.inputUsername.text.toString()
             val pass = binding.inputPassword.text.toString()
 
@@ -57,7 +61,8 @@ class HomeFragment : Fragment() {
         viewModel.authUserResult.observe(viewLifecycleOwner) { tokenInfo ->
             Log.d("LOGIN_DEBUG", "TokenInfo recibido: $tokenInfo")
             if (tokenInfo.token.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Credenciales incorrectas", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 viewModel.validateToken(tokenInfo.token)
                 Log.d("VALIDATE_TOKEN", "SE PROCEDE A VALIDAR EL TOKEN")
@@ -65,10 +70,9 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.tokenUserResult.observe(viewLifecycleOwner){ user ->
-            Log.d("DEBUG_USER", "User info: $user")
+        viewModel.tokenUserResult.observe(viewLifecycleOwner) { user ->
             if (user != null) {
-                Log.d("DEBUG_USER", "User role:" + user.role.toString())
+                UserStorage.addUser(user)
                 when (user.role.toString()) {
                     "CLIENTE" -> findNavController().navigate(R.id.clientFragment)
                     "VENDEDOR" -> findNavController().navigate(R.id.sellerFragment)
@@ -76,8 +80,9 @@ class HomeFragment : Fragment() {
                     "TRANSPORTISTA" -> findNavController().navigate(R.id.carrierFragment)
                     else -> Toast.makeText(context, "Rol no reconocido", Toast.LENGTH_SHORT).show()
                 }
-            }else{
-                Toast.makeText(requireContext(), "Credenciales incorrectas :(", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Credenciales incorrectas :(", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -88,7 +93,10 @@ class HomeFragment : Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        viewModel = ViewModelProvider(this, UserViewModel.Factory(activity.application))[UserViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            UserViewModel.Factory(activity.application)
+        )[UserViewModel::class.java]
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) onNetworkError()

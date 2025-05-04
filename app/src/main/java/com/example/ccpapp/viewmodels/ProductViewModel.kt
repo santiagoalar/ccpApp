@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ProductViewModel(application: Application) : AndroidViewModel(application) {
+open class ProductViewModel(application: Application) : AndroidViewModel(application) {
 
     private val tokenManager = TokenManager(application.applicationContext)
     private val productRepository = ProductRepository(application)
@@ -64,9 +64,9 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun refreshProducts(){
-        viewModelScope.launch{
-            val token:String = tokenManager.getToken()
+    fun refreshProducts() {
+        viewModelScope.launch {
+            val token: String = tokenManager.getToken()
             try {
                 val productList = productRepository.getAllProducts(token)
                 _products.value = productList

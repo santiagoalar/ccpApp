@@ -2,6 +2,7 @@ package com.example.ccpapp.network
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
@@ -26,6 +27,12 @@ class NetworkServiceAdapter(context: Context) {
             instance ?: NetworkServiceAdapter(context).also {
                 instance = it
             }
+        }
+
+        // Método para testing
+        @VisibleForTesting
+        fun setInstanceForTesting(mockInstance: NetworkServiceAdapter?) {
+            instance = mockInstance
         }
     }
 

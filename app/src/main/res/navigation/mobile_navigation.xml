@@ -50,5 +50,10 @@
             android:name="clientId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.ccpapp.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 
 </navigation>

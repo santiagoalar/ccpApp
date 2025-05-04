@@ -2,7 +2,6 @@ package com.example.ccpapp.ui.client
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +11,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.CartAdapter
+import com.example.ccpapp.adapters.ClientAdapter
 import com.example.ccpapp.adapters.ProductAdapter
+import com.example.ccpapp.adapters.ProductAdapter.CartStorage
 import com.example.ccpapp.databinding.FragmentShoppingCartBinding
 import com.example.ccpapp.models.Product
+import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.CartItemViewModel
 import com.example.ccpapp.viewmodels.ProductViewModel
 import org.json.JSONObject
-import com.bumptech.glide.Glide
-import com.example.ccpapp.adapters.ProductAdapter.CartStorage
-import com.example.ccpapp.network.TokenManager
 
 class ShoppingCartFragment : Fragment() {
 
@@ -32,7 +32,8 @@ class ShoppingCartFragment : Fragment() {
     private lateinit var viewModelPurchase: CartItemViewModel
     private var navc: NavController? = null
     private val purchasedProducts = mutableListOf<Product>()
-    val cartItems = ProductAdapter.CartStorage.getItems().toMutableList()
+    val cartItems = CartStorage.getItems().toMutableList()
+    val user = ClientAdapter.UserStorage
     private lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
@@ -49,10 +50,14 @@ class ShoppingCartFragment : Fragment() {
         binding.buttonCheckout.setOnClickListener {
 
             if (cartItems.isEmpty()) {
-                Toast.makeText(requireContext(), "No hay productos en el carrito", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "No hay productos en el carrito",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
-            val subtotal:Int = cartItems.sumOf { it.unitPrice * it.quantity }
+            val subtotal: Int = cartItems.sumOf { it.unitPrice * it.quantity }
             val jsonBody = JSONObject().apply {
                 put("clientId", tokenManager.getUserId())
                 put("quantity", cartItems.size)
@@ -61,16 +66,16 @@ class ShoppingCartFragment : Fragment() {
                 put("total", subtotal)
                 put("currency", "USD")
                 put("clientInfo", JSONObject().apply {
-                    put("name", "Cliente 1.1")
+                    put("name", user.getUsers()[0].name)
                     put("address", "Calle 12 # 11-30")
-                    put("email", "info@cliente1.com")
-                    put("phone", "3123335566")
+                    put("email",  user.getUsers()[0].email)
+                    put("phone",  user.getUsers()[0].phone)
                 })
                 put("payment", JSONObject().apply {
                     put("amount", subtotal)
                     put("cardNumber", "4111111111111111")
                     put("cvv", "123")
-                    put("expiryDate", "1225")
+                    put("expiryDate", "12/25")
                     put("currency", "USD")
                 })
                 put("orderDetails", cartItems.fold(org.json.JSONArray()) { array, product ->
@@ -83,7 +88,6 @@ class ShoppingCartFragment : Fragment() {
                     })
                 })
             }
-            Log.d("Purchase ", jsonBody.toString())
             viewModelPurchase.savePurchase(jsonBody)
 
             binding.successLayout.isVisible = true
@@ -124,10 +128,10 @@ class ShoppingCartFragment : Fragment() {
 
         navc = view.findNavController()
 
-        val cartItems = ProductAdapter.CartStorage.getItems().toMutableList()
+        val cartItems = CartStorage.getItems().toMutableList()
         val adapter = CartAdapter(cartItems) {
-            // Actualizar el total cuando cambie el carrito
-            val updatedTotal = ProductAdapter.CartStorage.getItems().sumOf { it.totalPrice }
+
+            val updatedTotal = CartStorage.getItems().sumOf { it.totalPrice }
             binding.textTotal.text = "Total: $$updatedTotal"
         }
         binding.recyclerViewCartItems.adapter = adapter
