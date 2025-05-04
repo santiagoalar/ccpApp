@@ -1,0 +1,29 @@
+[
+  {
+    "id": "del-001",
+    "name": "Entrega Productos Orgánicos",
+    "arrivalDate": "2023-11-15T14:30:00",
+    "clientId": "cli-5678",
+    "location": "Calle Principal 123, Bogotá",
+    "status": "en_camino",
+    "duration": "45 minutos"
+  },
+  {
+    "id": "del-002",
+    "name": "Entrega Mercado Semanal",
+    "arrivalDate": "2023-11-17T10:15:00",
+    "clientId": "cli-9012",
+    "location": "Avenida Central 456, Medellín",
+    "status": "pendiente",
+    "duration": "30 minutos"
+  },
+  {
+    "id": "del-003",
+    "name": "Entrega Especial Urgente",
+    "arrivalDate": "2023-11-14T08:45:00",
+    "clientId": "cli-3456",
+    "location": "Carrera 78 #23-45, Cali",
+    "status": "entregado",
+    "duration": "20 minutos"
+  }
+]

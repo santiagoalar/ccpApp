@@ -27,7 +27,5 @@
     <string-array name="tipo_usuario">
         <item>CLIENTE</item>
         <item>VENDEDOR</item>
-        <item>DIRECTIVO</item>
-        <item>TRANSPORTISTA</item>
     </string-array>
 </resources>

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ClientItemBinding
 import com.example.ccpapp.models.User
-import com.example.ccpapp.ui.client.ClientDetailFragment
 import com.example.ccpapp.ui.client.SellerFragmentDirections
 
 class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
@@ -49,12 +48,14 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
         }
         holder.bind(clients[position])
         holder.binding.root.setOnClickListener {
-            val action = SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
+            val action =
+                SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
             //Navigate using that action
             holder.binding.root.findNavController().navigate(action)
         }
-        holder.binding.buttonAddDetail.setOnClickListener{
-            val action = SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
+        holder.binding.buttonAddDetail.setOnClickListener {
+            val action =
+                SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
             //Navigate using that action
             holder.binding.root.findNavController().navigate(action)
         }
@@ -95,6 +96,7 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
         private val users = mutableListOf<User>()
 
         fun addUser(user: User) {
+            clear()
             users.add(user)
         }
 

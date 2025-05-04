@@ -75,7 +75,8 @@ class CartAdapter(
         parent: ViewGroup,
         viewType: Int
     ): CartViewHolder {
-        val binding = CartItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = CartItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false)
         return CartViewHolder(binding)
     }
 
