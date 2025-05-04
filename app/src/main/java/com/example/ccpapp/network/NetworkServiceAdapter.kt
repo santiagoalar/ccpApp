@@ -9,6 +9,7 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ccpapp.constants.StaticConstants
+import com.example.ccpapp.models.Delivery
 import com.example.ccpapp.models.Order
 import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.Rol
@@ -320,5 +321,57 @@ class NetworkServiceAdapter(context: Context) {
         }
         return orderList
     }
+
+    suspend fun getDeliveries(token: String): List<Delivery> = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}clients/delivery/"
+        val request = object : JsonArrayRequest(
+            Method.GET, url, null,
+            { response ->
+                try {
+                    val orderList = parseDeliveryList(response)
+                    cont.resume(orderList)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                try {
+                    val fallbackJson = readJsonFromAssets(appContext, "deliveryJson.json")
+                    val fallbackArray = JSONArray(fallbackJson)
+                    val fallbackList = parseDeliveryList(fallbackArray)
+                    cont.resume(fallbackList)
+                } catch (ex: Exception) {
+                    cont.resumeWithException(ex)
+                }
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+        requestQueue.add(request)
+    }
+
+    private fun parseDeliveryList(jsonArray: JSONArray): List<Delivery> {
+        val deliveryList = mutableListOf<Delivery>()
+        for (i in 0 until jsonArray.length()) {
+            val product = jsonArray.getJSONObject(i)
+            deliveryList.add(
+                Delivery(
+                    id = product.getString("id"),
+                    name = product.getString("name"),
+                    arrivalDate = product.getString("arrivalDate"),
+                    location = product.getString("location"),
+                    clientId = product.getString("clientId"),
+                    status = product.getString("status"),
+                    duration = product.getString("duration"),
+                )
+            )
+        }
+        return deliveryList
+    }
+
 
 }

@@ -45,13 +45,23 @@
             tools:text="Localización: Calle 123 #45-67" />
 
         <TextView
-            android:id="@+id/textDuration"
+            android:id="@+id/textStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textLocation"
+            tools:text="Status: En camino" />
+
+        <TextView
+            android:id="@+id/textDuration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textStatus"
             tools:text="Tiempo estimado: 45 minutos" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
