@@ -3,11 +3,11 @@
 
     <item android:title=""
         android:icon="@drawable/ic_cart"
-        android:id="@+id/clientFragment"/>
+        android:id="@+id/sellerFragment"/>
 
     <item android:title=""
         android:icon="@drawable/ic_truck"
-        android:id="@+id/ordersFragment"/>
+        android:id="@+id/orderFragment"/>
 
     <item android:title=""
         android:icon="@drawable/settings"

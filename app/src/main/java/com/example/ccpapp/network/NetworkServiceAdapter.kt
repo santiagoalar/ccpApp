@@ -98,7 +98,7 @@ class NetworkServiceAdapter(context: Context) {
                         id = response.getString("id"),
                         name = response.getString("name"),
                         email = response.getString("email"),
-                        phone = response.getString("email"),
+                        phone = response.getString("phone"),
                         password = null,
                         role = Rol.valueOf(response.getString("role").uppercase())
                     )

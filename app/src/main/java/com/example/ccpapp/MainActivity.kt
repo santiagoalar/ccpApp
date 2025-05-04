@@ -9,11 +9,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
+import com.example.ccpapp.models.Rol
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,22 +31,28 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+
         setupWithNavController(bottomNavigationView, navController)
 
         // Ocultar o mostrar el BottomNavigationView según el fragmento actual
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                // Fragmentos donde se debe ocultar el BottomNavigationView
                 R.id.navigation_home, R.id.signUpFragment, R.id.shoppingCartFragment -> {
                     bottomNavigationView.visibility = android.view.View.GONE
                 }
-                // En todos los demás fragmentos, mostrar el BottomNavigationView
                 else -> {
                     bottomNavigationView.visibility = android.view.View.VISIBLE
                 }
             }
         }
+    }
+
+    fun updateBottomNavigationMenu(userRole: String) {
+        // Actualizar el menú del BottomNavigationView según el rol del usuario
+        val menuRes = if (userRole == Rol.CLIENTE.name) R.menu.bottom_nav_client else R.menu.bottom_nav_seller
+        bottomNavigationView.menu.clear()
+        bottomNavigationView.inflateMenu(menuRes)
     }
 
     override fun onSupportNavigateUp(): Boolean {

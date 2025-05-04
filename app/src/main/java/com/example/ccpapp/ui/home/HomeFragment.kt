@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.example.ccpapp.MainActivity
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ClientAdapter.UserStorage
 import com.example.ccpapp.databinding.FragmentHomeBinding
@@ -57,6 +58,11 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    fun onUserLoggedIn(userRole: String) {
+        // Llamar a MainActivity para actualizar el menú
+        (binding.root.context as? MainActivity)?.updateBottomNavigationMenu(userRole)
+    }
+
     private fun observeAuthUserResult(view: View) {
         viewModel.authUserResult.observe(viewLifecycleOwner) { tokenInfo ->
             Log.d("LOGIN_DEBUG", "TokenInfo recibido: $tokenInfo")
@@ -72,6 +78,7 @@ class HomeFragment : Fragment() {
 
         viewModel.tokenUserResult.observe(viewLifecycleOwner) { user ->
             if (user != null) {
+                onUserLoggedIn(user.role.name)
                 UserStorage.addUser(user)
                 when (user.role.toString()) {
                     "CLIENTE" -> findNavController().navigate(R.id.clientFragment)
