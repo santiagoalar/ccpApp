@@ -1,23 +1,17 @@
 [
   {
-    "id": "1",
-    "name": "Compra 1",
-    "date": "2023-10-01",
-    "total": 100,
-    "clientId": "1"
-  },
-  {
-    "id": "2",
-    "name": "Compra 2",
-    "date": "2023-10-01",
-    "total": 100,
-    "clientId": "1"
-  },
-  {
-    "id": "3",
-    "name": "Compra 3",
-    "date": "2023-10-01",
-    "total": 100,
-    "clientId": "1"
+    "clientId": "134a53a1-7863-4b70-95f7-2fd622a3f191",
+    "clientInfo": null,
+    "createdAt": "2025-04-27T07:21:53.903810",
+    "currency": "USD",
+    "id": "5722473f-4597-479c-9fac-0d99b40b8d64",
+    "orderDetails": null,
+    "payment": null,
+    "quantity": "666",
+    "status": "COMPLETADO",
+    "subtotal": 339.7,
+    "tax": 50.96,
+    "total": 390.66,
+    "updatedAt": null
   }
 ]

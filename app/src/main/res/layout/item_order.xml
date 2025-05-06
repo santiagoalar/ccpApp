@@ -54,7 +54,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textPrice"
-            tools:text="Cantidad de productos: 5" />
+            tools:text="Cantidad: 5 - Estado: Completado" />
+
+        <TextView
+            android:id="@+id/textSubtotalAndTax"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textQuantity"
+            tools:text="Subtotal: $130.000 - Impuestos: $20.000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

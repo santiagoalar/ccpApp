@@ -28,7 +28,8 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val token = tokenManager.getToken()
-                val orders = orderRepository.getAllOrders(token)
+                val clientId = tokenManager.getUserId()
+                val orders = orderRepository.getAllOrders(token, clientId)
                 _orders.value = orders
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
