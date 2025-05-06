@@ -204,12 +204,13 @@ class NetworkServiceAdapter(context: Context) {
 
     suspend fun getClients(token: String, sellerId: String): List<User> = suspendCoroutine { cont ->
         val url =
-            "${StaticConstants.API_BASE_URL}clients" //TODO cambiar por la original, agregar el sellerId
-        val request = object : JsonObjectRequest(
+            "${StaticConstants.API_BASE_URL}users/role/CLIENTE"
+        Log.d("RESPONSE", url.toString())
+        val request = object : JsonArrayRequest(
             Method.GET, url, null, { response ->
                 try {
-                    val clientJson = JSONArray(response)
-                    val clientList = parseClientList(clientJson)
+                    Log.d("RESPONSE", response.toString())
+                    val clientList = parseClientList(response)
                     cont.resume(clientList)
                 } catch (e: Exception) {
                     try {
@@ -273,8 +274,8 @@ class NetworkServiceAdapter(context: Context) {
             requestQueue.add(request)
         }
 
-    suspend fun getOrders(token: String): List<Order> = suspendCoroutine { cont ->
-        val url = "${StaticConstants.API_BASE_URL}clients/orders/"
+    suspend fun getOrders(token: String, clientId: String): List<Order> = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}clients/orders?clientId=${clientId}"
         val request = object : JsonArrayRequest(
             Method.GET, url, null,
             { response ->
@@ -312,10 +313,14 @@ class NetworkServiceAdapter(context: Context) {
             orderList.add(
                 Order(
                     id = product.getString("id"),
-                    name = product.getString("name"),
-                    date = product.getString("date"),
-                    total = product.getInt("total"),
-                    clientId = product.getString("clientId")
+                    clientId = product.getString("clientId"),
+                    createdAt = product.getString("createdAt"),
+                    currency = product.getString("currency"),
+                    quantity = product.getString("quantity"),
+                    status = product.getString("status"),
+                    subtotal = product.getDouble("subtotal"),
+                    tax = product.getDouble("tax"),
+                    total = product.getDouble("total")
                 )
             )
         }

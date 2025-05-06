@@ -1,9 +1,11 @@
 package com.example.ccpapp.adapters
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ItemOrderBinding
@@ -43,9 +45,6 @@ class OrderAdapter() : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
     override fun getItemCount(): Int = orders.size
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        /*holder.viewDataBinding.also {
-            it.textOrderId = orders[position]
-        }*/
         holder.bind(orders[position])
     }
 
@@ -58,15 +57,30 @@ class OrderAdapter() : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
         }
 
         fun bind(order: Order) {
-            viewDataBinding.textOrderId.text = "Orden #${order.id}"
-            viewDataBinding.textDate.text = "Fecha: ${order.date}"
-            viewDataBinding.textPrice.text = "Precio: ${order.total}" //TODO modify this for real value
-            viewDataBinding.textQuantity.text = "Cantidad de productos: ${order.total}"
-
             val format = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-            //binding.textPrice.text = "Precio: ${format.format(order.price)}"
 
-            //binding.textQuantity.text = "Cantidad de productos: ${order.productCount}"
+            viewDataBinding.textOrderId.text = "Orden #${order.id}"
+            viewDataBinding.textDate.text = "Fecha: ${formatDate(order.createdAt)}"
+            viewDataBinding.textPrice.text =
+                "Total: ${format.format(order.total)} ${order.currency}"
+            viewDataBinding.textQuantity.text =
+                "Cantidad: ${order.quantity} - Estado: ${order.status}"
+            viewDataBinding.textSubtotalAndTax.text =
+                "Subtotal: ${format.format(order.subtotal)} - Impuestos: ${format.format(order.tax)}"
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        private fun formatDate(dateString: String): String {
+            return try {
+                val inputFormat = java.time.format.DateTimeFormatter.ISO_DATE_TIME
+                val outputFormat = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                val dateTime = java.time.LocalDateTime.parse(dateString, inputFormat)
+                dateTime.format(outputFormat)
+            } catch (e: Exception) {
+                dateString
+            }
         }
     }
+
+
 }

@@ -58,9 +58,10 @@ class ShoppingCartFragment : Fragment() {
                 return@setOnClickListener
             }
             val subtotal: Int = cartItems.sumOf { it.unitPrice * it.quantity }
+            val totalQuantity = cartItems.sumOf { it.quantity }
             val jsonBody = JSONObject().apply {
                 put("clientId", tokenManager.getUserId())
-                put("quantity", cartItems.size)
+                put("quantity", totalQuantity)
                 put("subtotal", subtotal)
                 put("tax", 50.96)
                 put("total", subtotal)
