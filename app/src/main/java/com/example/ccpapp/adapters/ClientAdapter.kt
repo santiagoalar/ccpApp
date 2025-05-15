@@ -52,18 +52,15 @@ class ClientAdapter(private val clickListener: OnClientClickListener? = null) : 
             it.client = clients[position]
         }
         holder.bind(clients[position])
-        
-        // Configurar click en la tarjeta completa
+
         holder.binding.root.setOnClickListener {
             clickListener?.onClientClick(clients[position])
         }
-        
-        // Configurar click en el botón "Agregar detalles"
+
         holder.binding.buttonAddDetail.setOnClickListener {
             clickListener?.onAddDetailsClick(clients[position])
         }
-        
-        // Configurar click en el botón "Hacer pedido"
+
         holder.binding.buttonMakeOrder.setOnClickListener {
             clickListener?.onMakeOrderClick(clients[position])
         }

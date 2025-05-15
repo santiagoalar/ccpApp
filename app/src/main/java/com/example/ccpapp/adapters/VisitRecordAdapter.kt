@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.models.VisitRecord
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class VisitRecordAdapter(
     private var visitRecords: List<VisitRecord> = emptyList()
@@ -14,7 +16,6 @@ class VisitRecordAdapter(
 
     class VisitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvClientName: TextView = itemView.findViewById(R.id.tvClientName)
-        //val tvStoreName: TextView = itemView.findViewById(R.id.tvStoreName)
         val tvVisitDate: TextView = itemView.findViewById(R.id.tvVisitDate)
         val tvNotes: TextView = itemView.findViewById(R.id.tvNotes)
 
@@ -31,9 +32,34 @@ class VisitRecordAdapter(
 
     override fun onBindViewHolder(holder: VisitViewHolder, position: Int) {
         val visit = visitRecords[position]
-        //holder.tvClientName.text = visit.clientName
-        holder.tvVisitDate.text = "Fecha: ${visit.visitDate}"
+        holder.tvClientName.text = visit.clientId
+
+        val formattedDate = formatDate(visit.visitDate)
+        holder.tvVisitDate.text = "Fecha: $formattedDate"
+        
         holder.tvNotes.text = "Notas: ${visit.notes}"
+    }
+
+    private fun formatDate(dateString: String?): String {
+        if (dateString.isNullOrEmpty()) return "Fecha desconocida"
+        
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            
+            val date = inputFormat.parse(dateString)
+            date?.let { outputFormat.format(it) } ?: "Formato de fecha incorrecto"
+        } catch (e: Exception) {
+            try {
+                val alternateInputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                
+                val date = alternateInputFormat.parse(dateString)
+                date?.let { outputFormat.format(it) } ?: "Formato de fecha incorrecto"
+            } catch (e: Exception) {
+                "Formato de fecha desconocido"
+            }
+        }
     }
 
     override fun getItemCount(): Int = visitRecords.size
