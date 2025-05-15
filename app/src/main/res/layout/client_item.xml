@@ -6,7 +6,7 @@
 
         <variable
             name="client"
-            type="com.example.ccpapp.models.User" />
+            type="com.example.ccpapp.models.Client" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,7 +40,7 @@
                     android:id="@+id/textClientName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{client.name}"
+                    android:text="@{client.clientName}"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@{client.phone}"
+                        android:text="@{client.clientPhone}"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 
@@ -84,7 +84,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@{client.name}"
+                        android:text="@{client.address}"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 
@@ -106,7 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@{client.email}"
+                        android:text="@{client.clientEmail}"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 

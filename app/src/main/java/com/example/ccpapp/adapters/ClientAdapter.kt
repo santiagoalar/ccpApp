@@ -9,19 +9,20 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ClientItemBinding
+import com.example.ccpapp.models.Client
 import com.example.ccpapp.models.User
 import com.example.ccpapp.ui.client.SellerFragmentDirections
 
 class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
 
-    var clients: List<User> = emptyList()
+    var clients: List<Client> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    var client: User? = null
+    var client: Client? = null
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
@@ -69,11 +70,11 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(client: User) {
-            binding.textClientName.text = client.name
-            binding.textAddress.text = client.name
-            binding.textPhone.text = client.phone
-            binding.textEmail.text = client.email
+        fun bind(client: Client) {
+            binding.textClientName.text = client.clientName
+            binding.textAddress.text = client.address
+            binding.textPhone.text = client.clientPhone
+            binding.textEmail.text = client.clientEmail
 
             //binding.textProductPrice.text = "$${cartItem.totalPrice}"
             //binding.textProductQuantity.text = "Cantidad: ${cartItem.quantity}"

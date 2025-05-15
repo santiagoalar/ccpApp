@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ClientAdapter
 import com.example.ccpapp.databinding.FragmentSellerBinding
+import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.UserViewModel
 
 class SellerFragment: Fragment(), View.OnClickListener {
@@ -25,7 +26,7 @@ class SellerFragment: Fragment(), View.OnClickListener {
     private lateinit var viewModel: UserViewModel
     private var viewModelAdapter: ClientAdapter? = null
     private var navc: NavController?= null
-    private var clientId: Int?= null
+    private lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +76,7 @@ class SellerFragment: Fragment(), View.OnClickListener {
             }
         }
 
-        viewModel.refreshClients("SELLER-ID") //TODO cambiar por el user Id del vendedor
+        viewModel.refreshClients()
 
     }
 

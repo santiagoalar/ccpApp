@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.ccpapp.models.Client
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
 import com.example.ccpapp.network.TokenManager
+import com.example.ccpapp.repositories.ClientRepository
 import com.example.ccpapp.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,14 +22,15 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val tokenManager = TokenManager(application.applicationContext)
     private val userRepository = UserRepository(application)
+    private val clientRepository = ClientRepository(application)
 
-    private val _clients = MutableLiveData<List<User>>()
+    private val _clients = MutableLiveData<List<Client>>()
     private val _postUserResult = MutableLiveData<Boolean>()
     private val _authUserResult = MutableLiveData<TokenInfo>()
     private val _tokenUserResult = MutableLiveData<User?>()
     private val _selectedClient = MutableLiveData<User>()
 
-    val clients: LiveData<List<User>>
+    val clients: LiveData<List<Client>>
         get() = _clients
 
     val postUserResult: LiveData<Boolean>
@@ -117,11 +120,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshClients(userId: String) {
+    fun refreshClients() {
         viewModelScope.launch {
             val token: String = tokenManager.getToken()
             try {
-                val clientsList = userRepository.getAllClients(token, userId)
+                val userId = tokenManager.getUserId()
+                val clientsList = clientRepository.getAllClients(token, userId)
                 _clients.value = clientsList
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
