@@ -69,6 +69,10 @@ class ClientDetailFragment : Fragment() {
             binding.tvClientName.text = it.clientName
             binding.tvClientPhone.text = it.clientPhone
             binding.tvClientEmail.text = it.clientEmail
+            binding.tvClientStore.text = it.storeName
+            binding.tvClientAddress.text = it.address
+            binding.tvClientCity.text = it.city
+            binding.tvClientCountry.text = it.country
         }
     }
 
