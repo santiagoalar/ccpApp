@@ -1,6 +1,7 @@
 package com.example.ccpapp.repositories
 
 import android.app.Application
+import android.util.Log
 import com.example.ccpapp.models.VisitRecord
 import com.example.ccpapp.network.NetworkServiceAdapter
 import org.json.JSONObject

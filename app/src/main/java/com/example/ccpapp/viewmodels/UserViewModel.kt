@@ -28,7 +28,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _postUserResult = MutableLiveData<Boolean>()
     private val _authUserResult = MutableLiveData<TokenInfo>()
     private val _tokenUserResult = MutableLiveData<User?>()
-    private val _selectedClient = MutableLiveData<User>()
+    private val _selectedClient = MutableLiveData<Client>()
 
     val clients: LiveData<List<Client>>
         get() = _clients
@@ -42,7 +42,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     val tokenUserResult: MutableLiveData<User?>
         get() = _tokenUserResult
 
-    val selectedClient: LiveData<User>
+    val selectedClient: LiveData<Client>
         get() = _selectedClient
 
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
@@ -135,7 +135,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun setSelectedClient(client: User) {
+    fun setSelectedClient(client: Client) {
         _selectedClient.value = client
     }
 

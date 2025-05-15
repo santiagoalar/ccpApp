@@ -174,9 +174,9 @@ class NetworkServiceAdapter(context: Context) {
                     details = detailsObject.keys().asSequence().associateWith { key ->
                         detailsObject.getString(key)
                     },
-                    storageConditions = product.getString("storage_conditions"),
+                    storageConditions = product.getString("storageConditions"),
                     price = product.getInt("price"),
-                    deliveryTime = product.getInt("delivery_time"),
+                    deliveryTime = product.getInt("deliveryTime"),
                     images = images,
                     stock = product.getInt("stock"),
                     stockSelected = 0
@@ -367,12 +367,11 @@ class NetworkServiceAdapter(context: Context) {
     suspend fun postVisit(visitJson: JSONObject, salesmanId: String, token: String) =
         suspendCoroutine<Unit> { cont ->
             val url = "${StaticConstants.API_BASE_URL}salesman/${salesmanId}/visits"
-
             val request = object : JsonObjectRequest(
                 Method.POST, url, visitJson,
                 { response ->
                     cont.resume(Unit)
-                    Log.d("response", "response successful")
+                    Log.d("RESPONSE-POST-VISIT", "response successful")
                 },
                 { error ->
                     cont.resumeWithException(error)

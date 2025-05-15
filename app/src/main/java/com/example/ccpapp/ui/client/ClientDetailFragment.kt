@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.ccpapp.databinding.FragmentClientDetailBinding
-import com.example.ccpapp.models.User
+import com.example.ccpapp.models.Client
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.UserViewModel
 import com.example.ccpapp.viewmodels.VisitRecordsViewModel
@@ -30,7 +30,7 @@ class ClientDetailFragment : Fragment() {
     private lateinit var viewModel: UserViewModel
     private lateinit var visitRecordsViewModel: VisitRecordsViewModel
     private lateinit var tokenManager: TokenManager
-    private var client: User? = null
+    private var client: Client? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +45,8 @@ class ClientDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
-        visitRecordsViewModel = ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
+        visitRecordsViewModel =
+            ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
         tokenManager = TokenManager(requireContext())
 
         binding.btnBack.setOnClickListener {
@@ -59,14 +60,15 @@ class ClientDetailFragment : Fragment() {
         viewModel.selectedClient.observe(viewLifecycleOwner) { selectedClient ->
             client = selectedClient
             updateUI(selectedClient)
+            Log.d("ClientDetailFragment", "Cliente seleccionado: ${selectedClient?.clientName}")
         }
     }
 
-    private fun updateUI(client: User?) {
+    private fun updateUI(client: Client?) {
         client?.let {
-            binding.tvClientName.text = it.name
-            binding.tvClientPhone.text = it.phone
-            binding.tvClientEmail.text = it.email
+            binding.tvClientName.text = it.clientName
+            binding.tvClientPhone.text = it.clientPhone
+            binding.tvClientEmail.text = it.clientEmail
         }
     }
 
@@ -83,7 +85,6 @@ class ClientDetailFragment : Fragment() {
             .setPositiveButton("Guardar") { _, _ ->
                 val notes = editText.text.toString()
                 if (notes.isNotEmpty()) {
-                    Log.d("VisitRecordsViewModel", "API Visit JSON: $notes")
                     registerVisit(notes)
                 } else {
                     Toast.makeText(
@@ -100,11 +101,10 @@ class ClientDetailFragment : Fragment() {
     }
 
     private fun showVisitConfirmationDialog(notes: String) {
-        Log.d("VisitRecordsViewModel", "API Visit JSON: salesmanId")
         client?.let {
             val dialog = AlertDialog.Builder(requireContext())
                 .setTitle("Confirmar registro")
-                .setMessage("¿Desea registrar la visita en el local de ${it.name}?")
+                .setMessage("¿Desea registrar la visita en el local de ${it.clientName}?")
                 .setPositiveButton("Aceptar") { _, _ ->
                     submitVisit(notes)
                 }
@@ -120,15 +120,17 @@ class ClientDetailFragment : Fragment() {
     }
 
     private fun submitVisit(notes: String) {
-        Log.d("VisitRecordsViewModel", "API Visit JSON: $notes")
         client?.let { client ->
             val currentDate =
                 SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
-            Log.d("VisitRecordsViewModel", "API Visit JSON: $currentDate")
+            val salesmanId = tokenManager.getUserId()
             val visitJson = JSONObject().apply {
                 put("clientId", client.id)
                 put("visitDate", currentDate)
                 put("notes", notes)
+                put("salesmanId", salesmanId)
+                put("clientName", client.clientName)
+                put("store", "Tienda de ${client.clientName}")
             }
 
             visitRecordsViewModel.saveVisitRecord(visitJson)

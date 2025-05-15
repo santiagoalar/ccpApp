@@ -38,13 +38,12 @@ open class VisitRecordsViewModel(application: Application) : AndroidViewModel(ap
             try {
                 val token = tokenManager.getToken()
                 val salesmanId = tokenManager.getUserId()
-                Log.d("VisitRecordsViewModel", "API Visit JSON: $salesmanId")
+
                 val apiVisitJson = JSONObject().apply {
-                    put("visitDate", visitJson.getString("visit_date"))
+                    put("visitDate", visitJson.getString("visitDate"))
                     put("notes", visitJson.getString("notes"))
-                    put("clientId", visitJson.getString("client_id"))
+                    put("clientId", visitJson.getString("clientId"))
                 }
-                Log.d("VisitRecordsViewModel", "API Visit JSON: $apiVisitJson")
                 visitRecordsRepository.saveData(apiVisitJson, salesmanId, token)
 
                 loadVisitRecords()

@@ -5,15 +5,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ClientItemBinding
 import com.example.ccpapp.models.Client
 import com.example.ccpapp.models.User
-import com.example.ccpapp.ui.client.SellerFragmentDirections
 
-class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
+class ClientAdapter(private val clickListener: OnClientClickListener? = null) : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
+
+    interface OnClientClickListener {
+        fun onClientClick(client: Client)
+        fun onAddDetailsClick(client: Client)
+        fun onMakeOrderClick(client: Client)
+    }
 
     var clients: List<Client> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
@@ -48,17 +52,20 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
             it.client = clients[position]
         }
         holder.bind(clients[position])
+        
+        // Configurar click en la tarjeta completa
         holder.binding.root.setOnClickListener {
-            val action =
-                SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
-            //Navigate using that action
-            holder.binding.root.findNavController().navigate(action)
+            clickListener?.onClientClick(clients[position])
         }
+        
+        // Configurar click en el botón "Agregar detalles"
         holder.binding.buttonAddDetail.setOnClickListener {
-            val action =
-                SellerFragmentDirections.actionSellerFragmentToClientDetailFragment(clients[position].id)
-            //Navigate using that action
-            holder.binding.root.findNavController().navigate(action)
+            clickListener?.onAddDetailsClick(clients[position])
+        }
+        
+        // Configurar click en el botón "Hacer pedido"
+        holder.binding.buttonMakeOrder.setOnClickListener {
+            clickListener?.onMakeOrderClick(clients[position])
         }
     }
 
@@ -75,22 +82,7 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
             binding.textAddress.text = client.address
             binding.textPhone.text = client.clientPhone
             binding.textEmail.text = client.clientEmail
-
-            //binding.textProductPrice.text = "$${cartItem.totalPrice}"
-            //binding.textProductQuantity.text = "Cantidad: ${cartItem.quantity}"
         }
-
-        /*fun bind(client: User) {
-            Glide.with(itemView)
-                .load(album.cover.toUri().buildUpon().scheme("https").build())
-                .apply(
-                    RequestOptions()
-                        .placeholder(R.drawable.loading_animation)
-                        .error(R.drawable.ic_broken_image)
-                )
-                .into(viewDataBinding.albumCover)
-        }*/
-
     }
 
     object UserStorage {

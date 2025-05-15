@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ClientAdapter
 import com.example.ccpapp.databinding.FragmentSellerBinding
+import com.example.ccpapp.models.Client
+import com.example.ccpapp.models.Rol
+import com.example.ccpapp.models.User
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.UserViewModel
 
-class SellerFragment: Fragment(), View.OnClickListener {
+class SellerFragment: Fragment() {
 
     private var _binding: FragmentSellerBinding? = null
     private val binding get() = _binding!!
@@ -26,17 +29,13 @@ class SellerFragment: Fragment(), View.OnClickListener {
     private lateinit var viewModel: UserViewModel
     private var viewModelAdapter: ClientAdapter? = null
     private var navc: NavController?= null
-    private lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentSellerBinding.inflate(inflater, container, false)
-        viewModelAdapter = ClientAdapter()
-
         return binding.root
     }
 
@@ -57,13 +56,30 @@ class SellerFragment: Fragment(), View.OnClickListener {
 
         recyclerView = binding.recyclerViewClients
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = viewModelAdapter
         navc = view.findNavController()
 
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             UserViewModel.Factory(requireActivity().application)
         ).get(UserViewModel::class.java)
+
+        viewModelAdapter = ClientAdapter(object : ClientAdapter.OnClientClickListener {
+            override fun onClientClick(client: Client) {
+                viewModel.setSelectedClient(client)
+                navc?.navigate(R.id.action_sellerFragment_to_clientDetailFragment)
+            }
+            
+            override fun onAddDetailsClick(client: Client) {
+                viewModel.setSelectedClient(client)
+                navc?.navigate(R.id.action_sellerFragment_to_clientDetailFragment)
+            }
+            
+            override fun onMakeOrderClick(client: Client) {
+                Toast.makeText(context, "Crear pedido para ${client.clientName}", Toast.LENGTH_SHORT).show()
+            }
+        })
+        
+        recyclerView.adapter = viewModelAdapter
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) onNetworkError()
@@ -76,12 +92,9 @@ class SellerFragment: Fragment(), View.OnClickListener {
             }
         }
 
+        val tokenManager = TokenManager(requireContext())
+        val salesmanId = tokenManager.getUserId() 
         viewModel.refreshClients()
-
-    }
-
-    override fun onClick(v: View?) {
-        navc?.navigate(R.id.action_sellerFragment_to_clientDetailFragment)
     }
 
 }
