@@ -15,6 +15,7 @@ import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.Rol
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
+import com.example.ccpapp.models.VisitRecord
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
@@ -340,14 +341,8 @@ class NetworkServiceAdapter(context: Context) {
                 }
             },
             { error ->
-                try {
-                    val fallbackJson = readJsonFromAssets(appContext, "deliveryJson.json")
-                    val fallbackArray = JSONArray(fallbackJson)
-                    val fallbackList = parseDeliveryList(fallbackArray)
-                    cont.resume(fallbackList)
-                } catch (ex: Exception) {
-                    cont.resumeWithException(ex)
-                }
+                cont.resume(emptyList())
+                Log.d("Delivery API Error", error.message ?: "Error desconocido")
             }
         ) {
             override fun getHeaders(): MutableMap<String, String> {
@@ -376,6 +371,74 @@ class NetworkServiceAdapter(context: Context) {
             )
         }
         return deliveryList
+    }
+
+    suspend fun postVisit(visitJson: JSONObject, salesmanId: String, token: String) = suspendCoroutine<Unit> { cont ->
+        val url = "${StaticConstants.API_BASE_URL}salesman/${salesmanId}/visits"
+
+        val request = object : JsonObjectRequest(
+            Method.POST, url, visitJson,
+            { response ->
+                cont.resume(Unit)
+                Log.d("response", "response successful")
+            },
+            { error ->
+                cont.resumeWithException(error)
+                Log.d("response failed", error.message?.toString() ?: "Unknown error")
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+
+        Log.d("request", request.toString())
+        requestQueue.add(request)
+    }
+
+    suspend fun getVisitRecords(token: String, salesmanId: String): List<VisitRecord> = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}salesman/${salesmanId}/visits"
+        val request = object : JsonArrayRequest(
+            Method.GET, url, null,
+            { response ->
+                try {
+                    val visitList = parseVisitRecordList(response)
+                    cont.resume(visitList)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                cont.resume(emptyList())
+                Log.d("VisitRecord API Error", error.message ?: "Error desconocido")
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+        requestQueue.add(request)
+    }
+
+    private fun parseVisitRecordList(jsonArray: JSONArray): List<VisitRecord> {
+        val visitList = mutableListOf<VisitRecord>()
+        for (i in 0 until jsonArray.length()) {
+            val product = jsonArray.getJSONObject(i)
+            visitList.add(
+                VisitRecord(
+                    clientId = product.getString("clientId"),
+                    notes = product.getString("notes"),
+                    recordId = product.getString("recordId"),
+                    salesmanId = product.getString("salesmanId"),
+                    visitDate = product.getString("visitDate")
+                )
+            )
+        }
+        return visitList
     }
 
 

@@ -1,95 +1,140 @@
 package com.example.ccpapp.ui.client
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
+import android.app.AlertDialog
 import android.os.Bundle
-import android.provider.MediaStore
+import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.ccpapp.databinding.FragmentClientDetailBinding
+import com.example.ccpapp.models.User
+import com.example.ccpapp.network.TokenManager
+import com.example.ccpapp.viewmodels.UserViewModel
+import com.example.ccpapp.viewmodels.VisitRecordsViewModel
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ClientDetailFragment : Fragment() {
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var captureVideoLauncher: ActivityResultLauncher<Intent>
     private var _binding: FragmentClientDetailBinding? = null
     private val binding get() = _binding!!
 
-    @SuppressLint("SetTextI18n")
+    private lateinit var viewModel: UserViewModel
+    private lateinit var visitRecordsViewModel: VisitRecordsViewModel
+    private lateinit var tokenManager: TokenManager
+    private var client: User? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentClientDetailBinding.inflate(inflater, container, false)
-
-        // Registrar el ActivityResultLauncher
-        captureVideoLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val videoUri = result.data?.data
-                // Mostrar un mensaje cuando el video se haya guardado
-                Toast.makeText(requireContext(), "Video guardado: $videoUri", Toast.LENGTH_SHORT).show()
-                binding.tvRecommendationContent.text = "¡Tu video está siendo procesado en este momento, te traeremos recomendaciones de tu lugar muy pronto!"
-            } else {
-                Toast.makeText(requireContext(), "No se grabó ningún video", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        // Asignar el click del botón para grabar video
-        binding.btnRecordVideo.setOnClickListener {
-            openVideoCamera()
-        }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                openVideoCamera()
-            } else {
-                Toast.makeText(requireContext(), "Permiso de cámara denegado", Toast.LENGTH_SHORT).show()
-                openAppSettings()
+        viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        visitRecordsViewModel = ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
+        tokenManager = TokenManager(requireContext())
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        binding.btnRegisterVisit.setOnClickListener {
+            showVisitNoteDialog()
+        }
+
+        viewModel.selectedClient.observe(viewLifecycleOwner) { selectedClient ->
+            client = selectedClient
+            updateUI(selectedClient)
+        }
+    }
+
+    private fun updateUI(client: User?) {
+        client?.let {
+            binding.tvClientName.text = it.name
+            binding.tvClientPhone.text = it.phone
+            binding.tvClientEmail.text = it.email
+        }
+    }
+
+    private fun showVisitNoteDialog() {
+        val editText = EditText(requireContext())
+        editText.hint = "Escribe una nota para la visita"
+        editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        editText.isSingleLine = false
+        editText.minLines = 3
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Registrar visita")
+            .setView(editText)
+            .setPositiveButton("Guardar") { _, _ ->
+                val notes = editText.text.toString()
+                if (notes.isNotEmpty()) {
+                    Log.d("VisitRecordsViewModel", "API Visit JSON: $notes")
+                    registerVisit(notes)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "La nota no puede estar vacía",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-        }
+            .setNegativeButton("Cancelar", null)
+            .create()
 
-        binding.btnRecordVideo.setOnClickListener {
-            checkCameraPermissionAndRecord()
+        dialog.show()
+    }
+
+    private fun showVisitConfirmationDialog(notes: String) {
+        Log.d("VisitRecordsViewModel", "API Visit JSON: salesmanId")
+        client?.let {
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Confirmar registro")
+                .setMessage("¿Desea registrar la visita en el local de ${it.name}?")
+                .setPositiveButton("Aceptar") { _, _ ->
+                    submitVisit(notes)
+                }
+                .setNegativeButton("Cancelar", null)
+                .create()
+
+            dialog.show()
         }
     }
 
-    private fun checkCameraPermissionAndRecord() {
-        if (requireContext().checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            openVideoCamera()
-        } else {
-            requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-        }
+    private fun registerVisit(notes: String) {
+        showVisitConfirmationDialog(notes)
     }
 
-    private fun openAppSettings() {
-        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = android.net.Uri.fromParts("package", requireContext().packageName, null)
+    private fun submitVisit(notes: String) {
+        Log.d("VisitRecordsViewModel", "API Visit JSON: $notes")
+        client?.let { client ->
+            val currentDate =
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
+            Log.d("VisitRecordsViewModel", "API Visit JSON: $currentDate")
+            val visitJson = JSONObject().apply {
+                put("clientId", client.id)
+                put("visitDate", currentDate)
+                put("notes", notes)
+            }
+
+            visitRecordsViewModel.saveVisitRecord(visitJson)
+            Toast.makeText(requireContext(), "Visita registrada correctamente", Toast.LENGTH_SHORT)
+                .show()
         }
-        startActivity(intent)
-    }
-
-
-    private fun openVideoCamera() {
-        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-        captureVideoLauncher.launch(intent)
     }
 
     override fun onDestroyView() {

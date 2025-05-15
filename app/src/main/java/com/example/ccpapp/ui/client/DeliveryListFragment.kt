@@ -40,14 +40,17 @@ class DeliveryListFragment : Fragment() {
         viewModel.deliveries.observe(viewLifecycleOwner) { deliveries ->
             deliveries?.let {
                 adapter.deliveries = it
+                
+                // Mostrar mensaje si la lista está vacía
+                if (it.isEmpty()) {
+                    binding.emptyView.visibility = View.VISIBLE
+                    binding.recyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyView.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                }
             }
             binding.progressBar.visibility = View.GONE
-
-            if (deliveries?.isEmpty() == true) {
-                binding.emptyView.visibility = View.VISIBLE
-            } else {
-                binding.emptyView.visibility = View.GONE
-            }
         }
 
         viewModel.loadDeliveries()

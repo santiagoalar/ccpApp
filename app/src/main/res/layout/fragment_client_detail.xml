@@ -1,197 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:padding="16dp"
-    tools:context=".ui.client.ClientFragment">
+    android:padding="16dp">
 
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20sp"
-        android:paddingTop="20dp"
-        tools:ignore="MissingConstraints">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvNameStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nombre del Usuario"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvNameDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pedro Alfonso"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:gravity="end"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvPhoneStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Telefono:"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvPhoneDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="326 3340058"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:gravity="end"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvEmailStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Correo Electrónico"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvEmailDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="san@corre.com"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:gravity="end"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvAddressStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dirección:"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvAddressDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Calle 12 A 56 B 47"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:gravity="end"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvCityStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ciudad:"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvCityDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Neiva"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:gravity="end"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvDepartmentStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Departamento:"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvDepartmentDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Huila"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:gravity="end"/>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvRecommendationsTitle"
+        <ImageButton
+            android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recomendaciones desde IA"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_marginTop="32dp"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Volver"
+            android:src="@drawable/arrow_back"
+            app:tint="@color/white" />
 
         <TextView
-            android:id="@+id/tvRecommendationContent"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Graba tu primer video para que la IA te recomeinde la ubicación de tus productos"
-            android:textSize="16sp"
-            android:textStyle="italic"
+            android:layout_marginStart="16dp"
+            android:text="Cliente"
             android:textColor="@color/white"
-            android:layout_marginTop="8dp"/>
-¿
-        <Button
-            android:id="@+id/btnRecordVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Grabar Video"/>
-
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/labelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Nombre:"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
+
+    <TextView
+        android:id="@+id/tvClientName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@id/labelName"
+        app:layout_constraintTop_toTopOf="@id/labelName"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Nombre del cliente" />
+
+    <TextView
+        android:id="@+id/labelEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Email:"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvClientName" />
+
+    <TextView
+        android:id="@+id/tvClientEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@id/labelEmail"
+        app:layout_constraintTop_toTopOf="@id/labelEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="email@ejemplo.com" />
+
+    <TextView
+        android:id="@+id/labelPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Teléfono:"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvClientEmail" />
+
+    <TextView
+        android:id="@+id/tvClientPhone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@id/labelPhone"
+        app:layout_constraintTop_toTopOf="@id/labelPhone"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="123456789" />
+
+    <Button
+        android:id="@+id/btnRegisterVisit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Registrar Visita"
+        android:backgroundTint="@color/fucsia"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvClientPhone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
