@@ -63,5 +63,9 @@
         android:id="@+id/visitRecordsFragment"
         android:name="com.example.ccpapp.ui.seller.VisitRecordsFragment"
         android:label="VisitRecordsFragment" />
+    <fragment
+        android:id="@+id/routesFragment"
+        android:name="com.example.ccpapp.ui.seller.RoutesFragment"
+        android:label="RoutesFragment" />
 
 </navigation>

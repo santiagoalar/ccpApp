@@ -9,13 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccpapp.adapters.VisitRecordAdapter
 import com.example.ccpapp.databinding.FragmentVisitRecordsBinding
+import com.example.ccpapp.viewmodels.UserViewModel
 import com.example.ccpapp.viewmodels.VisitRecordsViewModel
 
 class VisitRecordsFragment : Fragment() {
 
     private var _binding: FragmentVisitRecordsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: VisitRecordsViewModel
+    private lateinit var visitViewModel: VisitRecordsViewModel
+    private lateinit var userViewModel: UserViewModel
     private lateinit var adapter: VisitRecordAdapter
 
     override fun onCreateView(
@@ -30,7 +32,8 @@ class VisitRecordsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
+        visitViewModel = ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
 
         adapter = VisitRecordAdapter()
         binding.visitRecyclerView.apply {
@@ -38,7 +41,13 @@ class VisitRecordsFragment : Fragment() {
             adapter = this@VisitRecordsFragment.adapter
         }
 
-        viewModel.visitRecords.observe(viewLifecycleOwner) { visits ->
+        userViewModel.refreshClients()
+
+        userViewModel.clientsMap.observe(viewLifecycleOwner) { clientsMap ->
+            adapter.updateClientsMap(clientsMap)
+        }
+
+        visitViewModel.visitRecords.observe(viewLifecycleOwner) { visits ->
             visits?.let {
                 adapter.updateVisits(it)
 
@@ -51,11 +60,10 @@ class VisitRecordsFragment : Fragment() {
                 }
             }
 
-            // Ocultar el ProgressBar cuando se cargan los datos
             binding.progressBar.visibility = View.GONE
         }
 
-        viewModel.loadVisitRecords()
+        visitViewModel.loadVisitRecords()
     }
 
     override fun onDestroyView() {

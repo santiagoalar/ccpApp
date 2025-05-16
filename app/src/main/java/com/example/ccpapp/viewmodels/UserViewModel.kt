@@ -30,6 +30,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _tokenUserResult = MutableLiveData<User?>()
     private val _selectedClient = MutableLiveData<Client>()
 
+    // Mapa para almacenar la relación entre el ID del cliente y su nombre
+    private val _clientsMap = MutableLiveData<Map<String, String>>(mapOf())
+    val clientsMap: LiveData<Map<String, String>>
+        get() = _clientsMap
+
     val clients: LiveData<List<Client>>
         get() = _clients
 
@@ -127,6 +132,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                 val userId = tokenManager.getUserId()
                 val clientsList = clientRepository.getAllClients(token, userId)
                 _clients.value = clientsList
+
+                val clientIdToNameMap = clientsList.associate { it.id to it.clientName }
+                _clientsMap.value = clientIdToNameMap
+                
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (e: Exception) {

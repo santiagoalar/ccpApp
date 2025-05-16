@@ -11,7 +11,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class VisitRecordAdapter(
-    private var visitRecords: List<VisitRecord> = emptyList()
+    private var visitRecords: List<VisitRecord> = emptyList(),
+    private var clientIdToNameMap: Map<String, String> = mapOf()
 ) : RecyclerView.Adapter<VisitRecordAdapter.VisitViewHolder>() {
 
     class VisitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -32,14 +33,16 @@ class VisitRecordAdapter(
 
     override fun onBindViewHolder(holder: VisitViewHolder, position: Int) {
         val visit = visitRecords[position]
-        holder.tvClientName.text = visit.clientId
 
+        val clientName = clientIdToNameMap[visit.clientId] ?: visit.clientId
+        holder.tvClientName.text = clientName
+        
         val formattedDate = formatDate(visit.visitDate)
         holder.tvVisitDate.text = "Fecha: $formattedDate"
         
         holder.tvNotes.text = "Notas: ${visit.notes}"
     }
-
+    
     private fun formatDate(dateString: String?): String {
         if (dateString.isNullOrEmpty()) return "Fecha desconocida"
         
@@ -66,6 +69,11 @@ class VisitRecordAdapter(
 
     fun updateVisits(newVisits: List<VisitRecord>) {
         visitRecords = newVisits
+        notifyDataSetChanged()
+    }
+    
+    fun updateClientsMap(newMap: Map<String, String>) {
+        clientIdToNameMap = newMap
         notifyDataSetChanged()
     }
 }
