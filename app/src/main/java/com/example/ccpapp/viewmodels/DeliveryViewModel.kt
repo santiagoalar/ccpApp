@@ -27,7 +27,8 @@ class DeliveryViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             try {
                 val token = tokenManager.getToken()
-                val deliveries = deliveryRepository.getAllDeliveries(token)
+                val userId = tokenManager.getUserId()
+                val deliveries = deliveryRepository.getAllDeliveries(userId, token)
                 _deliveries.value = deliveries
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false

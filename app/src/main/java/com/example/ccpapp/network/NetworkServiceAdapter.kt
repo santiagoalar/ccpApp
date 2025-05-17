@@ -15,6 +15,7 @@ import com.example.ccpapp.models.Order
 import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.Rol
 import com.example.ccpapp.models.Route
+import com.example.ccpapp.models.StatusUpdates
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
 import com.example.ccpapp.models.VisitRecord
@@ -315,31 +316,34 @@ class NetworkServiceAdapter(context: Context) {
         return orderList
     }
 
-    suspend fun getDeliveries(token: String): List<Delivery> = suspendCoroutine { cont ->
-        val url = "${StaticConstants.API_BASE_URL}clients/delivery/"
-        val request = object : JsonArrayRequest(
-            Method.GET, url, null,
-            { response ->
-                try {
-                    val orderList = parseDeliveryList(response)
-                    cont.resume(orderList)
-                } catch (e: Exception) {
-                    cont.resumeWithException(e)
+    suspend fun getDeliveries(userId: String, token: String): List<Delivery> =
+        suspendCoroutine { cont ->
+            Log.d("RESPONSE", userId)
+            val url = "${StaticConstants.API_BASE_URL}deliveries/customers/${userId}"
+            val request = object : JsonArrayRequest(
+                Method.GET, url, null,
+                { response ->
+                    try {
+                        val orderList = parseDeliveryList(response)
+                        Log.d("DeliveryList", orderList.toString())
+                        cont.resume(orderList)
+                    } catch (e: Exception) {
+                        cont.resumeWithException(e)
+                    }
+                },
+                { error ->
+                    cont.resume(emptyList())
+                    Log.d("Delivery API Error", error.message ?: "Error desconocido")
                 }
-            },
-            { error ->
-                cont.resume(emptyList())
-                Log.d("Delivery API Error", error.message ?: "Error desconocido")
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] = "Bearer $token"
+                    return headers
+                }
             }
-        ) {
-            override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $token"
-                return headers
-            }
+            requestQueue.add(request)
         }
-        requestQueue.add(request)
-    }
 
     private fun parseDeliveryList(jsonArray: JSONArray): List<Delivery> {
         val deliveryList = mutableListOf<Delivery>()
@@ -348,16 +352,34 @@ class NetworkServiceAdapter(context: Context) {
             deliveryList.add(
                 Delivery(
                     id = delivery.getString("id"),
-                    name = delivery.getString("name"),
-                    arrivalDate = delivery.getString("arrivalDate"),
-                    location = delivery.getString("location"),
-                    clientId = delivery.getString("clientId"),
-                    status = delivery.getString("status"),
-                    duration = delivery.getString("duration"),
+                    orderId = delivery.getString("order_id"),
+                    customerId = delivery.getString("customer_id"),
+                    sellerId = delivery.getString("seller_id"),
+                    description = delivery.getString("description"),
+                    estimatedDeliveryDate = delivery.getString("estimated_delivery_date"),
+                    createdAt = delivery.getString("created_at"),
+                    statusUpdates = parseStatusUpdates(delivery.getJSONArray("status_updates"))
                 )
             )
         }
         return deliveryList
+    }
+
+    private fun parseStatusUpdates(jsonArray: JSONArray): List<StatusUpdates> {
+        val statusList = mutableListOf<StatusUpdates>()
+        for (i in 0 until jsonArray.length()) {
+            val status = jsonArray.getJSONObject(i)
+            statusList.add(
+                StatusUpdates(
+                    id = status.getString("id"),
+                    deliveryId = status.getString("delivery_id"),
+                    status = status.getString("status"),
+                    description = status.getString("description"),
+                    createdAt = status.getString("created_at")
+                )
+            )
+        }
+        return statusList
     }
 
     suspend fun postVisit(visitJson: JSONObject, salesmanId: String, token: String) =

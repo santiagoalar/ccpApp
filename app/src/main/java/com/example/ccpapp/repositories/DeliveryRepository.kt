@@ -6,7 +6,7 @@ import com.example.ccpapp.network.NetworkServiceAdapter
 
 class DeliveryRepository(private val application: Application) {
 
-    suspend fun getAllDeliveries(token: String): List<Delivery> {
-        return return NetworkServiceAdapter.getInstance(application).getDeliveries(token)
+    suspend fun getAllDeliveries(userId: String, token: String): List<Delivery> {
+        return return NetworkServiceAdapter.getInstance(application).getDeliveries(userId, token)
     }
 }
