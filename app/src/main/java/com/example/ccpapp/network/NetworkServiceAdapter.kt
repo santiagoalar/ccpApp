@@ -434,7 +434,7 @@ class NetworkServiceAdapter(context: Context) {
         date: String,
         token: String
     ): List<Route> = suspendCoroutine { cont ->
-        val url = "${StaticConstants.API_BASE_URL}routes/users/${userId}/routes?due_to=${date}"
+        val url = "${StaticConstants.API_BASE_URL}routes/users/${userId}?due_to=${date}"
         val request = object : JsonArrayRequest(
             Method.GET, url, null,
             { response ->
@@ -468,10 +468,10 @@ class NetworkServiceAdapter(context: Context) {
                     id = route.getString("id"),
                     name = route.getString("name"),
                     description = route.getString("description"),
-                    createdAt = route.getString("createdAt"),
-                    updatedAt = route.getString("updatedAt"),
-                    dueToDate = route.getString("dueToDate"),
-                    userId = route.getString("userId"),
+                    createdAt = route.getString("created_at"),
+                    updatedAt = route.getString("updated_at"),
+                    dueToDate = route.getString("due_to"),
+                    userId = route.getString("user_id"),
                     zone = route.getString("zone"),
                     waypoints = route.getJSONArray("waypoints").let { waypointsArray ->
                         List(waypointsArray.length()) { index ->
@@ -483,13 +483,14 @@ class NetworkServiceAdapter(context: Context) {
                                 longitude = waypoint.getDouble("longitude"),
                                 address = waypoint.getString("address"),
                                 order = waypoint.getInt("order"),
-                                createdAt = waypoint.getString("createdAt")
+                                createdAt = waypoint.getString("created_at")
                             )
                         }
                     }
                 )
             )
         }
+        Log.d("RouteList", routeList.toString())
         return routeList
     }
 

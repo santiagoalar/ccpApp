@@ -22,12 +22,27 @@
     <fragment
         android:id="@+id/sellerFragment"
         android:name="com.example.ccpapp.ui.seller.SellerFragment"
-        android:label="fragment_director"
+        android:label="fragment_seller"
         tools:layout="@layout/fragment_seller">
         <action
             android:id="@+id/action_sellerFragment_to_clientDetailFragment"
             app:destination="@id/clientDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/routesFragment"
+        android:name="com.example.ccpapp.ui.seller.RoutesFragment"
+        android:label="fragment_route"
+        tools:layout="@layout/fragment_seller_routes">
+        <action
+            android:id="@+id/action_routesFragment_to_routeDetailFragment"
+            app:destination="@id/routeDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/routeDetailFragment"
+        android:name="com.example.ccpapp.ui.seller.RouteDetailFragment"
+        android:label="RouteDetailFragment"
+        tools:layout="@layout/fragment_seller_route_detail"
+        />
     <fragment
         android:id="@+id/directorFragment"
         android:name="com.example.ccpapp.ui.client.DirectorFragment"
@@ -63,9 +78,6 @@
         android:id="@+id/visitRecordsFragment"
         android:name="com.example.ccpapp.ui.seller.VisitRecordsFragment"
         android:label="VisitRecordsFragment" />
-    <fragment
-        android:id="@+id/routesFragment"
-        android:name="com.example.ccpapp.ui.seller.RoutesFragment"
-        android:label="RoutesFragment" />
+
 
 </navigation>
