@@ -29,9 +29,8 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _authUserResult = MutableLiveData<TokenInfo>()
     private val _tokenUserResult = MutableLiveData<User?>()
     private val _selectedClient = MutableLiveData<Client>()
-
-    // Mapa para almacenar la relación entre el ID del cliente y su nombre
     private val _clientsMap = MutableLiveData<Map<String, String>>(mapOf())
+
     val clientsMap: LiveData<Map<String, String>>
         get() = _clientsMap
 

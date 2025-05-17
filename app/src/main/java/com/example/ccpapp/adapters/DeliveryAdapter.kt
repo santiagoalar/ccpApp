@@ -55,11 +55,9 @@ class DeliveryAdapter : RecyclerView.Adapter<DeliveryAdapter.DeliveryViewHolder>
             viewDataBinding.textEstimatedDate.text = "Fecha estimada: ${formatDate(delivery.estimatedDeliveryDate)}"
 
             if (delivery.statusUpdates.isEmpty()) {
-                // Mostrar mensaje de no hay actualizaciones
                 viewDataBinding.textNoUpdates.visibility = View.VISIBLE
                 viewDataBinding.recyclerViewStatusUpdates.visibility = View.GONE
             } else {
-                // Mostrar la lista de actualizaciones
                 viewDataBinding.textNoUpdates.visibility = View.GONE
                 viewDataBinding.recyclerViewStatusUpdates.visibility = View.VISIBLE
                 
@@ -68,8 +66,7 @@ class DeliveryAdapter : RecyclerView.Adapter<DeliveryAdapter.DeliveryViewHolder>
                     layoutManager = LinearLayoutManager(context)
                     adapter = statusAdapter
                 }
-                
-                // Ordenar las actualizaciones de estado por fecha de creación (más reciente primero)
+
                 val sortedUpdates = delivery.statusUpdates.sortedByDescending {
                     try {
                         LocalDateTime.parse(it.createdAt, DateTimeFormatter.ISO_DATE_TIME)

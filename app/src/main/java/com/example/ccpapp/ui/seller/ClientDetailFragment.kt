@@ -1,5 +1,6 @@
 package com.example.ccpapp.ui.seller
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -37,7 +39,8 @@ class ClientDetailFragment : Fragment() {
 
     private lateinit var viewModel: UserViewModel
     private lateinit var visitRecordsViewModel: VisitRecordsViewModel
-    private lateinit var videoRecordViewModel: VideoRecordViewModel
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var captureVideoLauncher: ActivityResultLauncher<Intent>
     private lateinit var tokenManager: TokenManager
     private var client: Client? = null
 
@@ -47,6 +50,25 @@ class ClientDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSellerClientDetailBinding.inflate(inflater, container, false)
+
+
+        captureVideoLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val videoUri = result.data?.data
+
+                Toast.makeText(requireContext(), "Video guardado: $videoUri", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "No se grabó ningún video", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnRecordVideo.setOnClickListener {
+            openVideoCamera()
+        }
+
+
         return binding.root
     }
 
@@ -71,6 +93,36 @@ class ClientDetailFragment : Fragment() {
             updateUI(selectedClient)
             Log.d("ClientDetailFragment", "Cliente seleccionado: ${selectedClient?.clientName}")
         }
+
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                openVideoCamera()
+            } else {
+                Toast.makeText(requireContext(), "Permiso de cámara denegado", Toast.LENGTH_SHORT).show()
+                openAppSettings()
+            }
+        }
+
+        binding.btnRecordVideo.setOnClickListener {
+            checkCameraPermissionAndRecord()
+        }
+    }
+
+    private fun checkCameraPermissionAndRecord() {
+        if (requireContext().checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            openVideoCamera()
+        } else {
+            requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun openAppSettings() {
+        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = android.net.Uri.fromParts("package", requireContext().packageName, null)
+        }
+        startActivity(intent)
     }
 
     private fun updateUI(client: Client?) {
@@ -150,6 +202,11 @@ class ClientDetailFragment : Fragment() {
             Toast.makeText(requireContext(), "Visita registrada correctamente", Toast.LENGTH_SHORT)
                 .show()
         }
+    }
+
+    private fun openVideoCamera() {
+        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+        captureVideoLauncher.launch(intent)
     }
 
     override fun onDestroyView() {

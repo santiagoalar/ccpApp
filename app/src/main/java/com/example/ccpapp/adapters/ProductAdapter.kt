@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.ccpapp.R
-import com.example.ccpapp.databinding.ProductItemBinding
+import com.example.ccpapp.databinding.ItemProductBinding
 import com.example.ccpapp.models.CartItem
 import com.example.ccpapp.models.Product
 
@@ -35,7 +35,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         parent: ViewGroup,
         viewType: Int
     ): ProductViewHolder {
-        val withDataBinding: ProductItemBinding = DataBindingUtil.inflate(
+        val withDataBinding: ItemProductBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             ProductViewHolder.LAYOUT,
             parent,
@@ -56,13 +56,13 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
     }
 
     class ProductViewHolder(
-        val viewDataBinding: ProductItemBinding,
+        val viewDataBinding: ItemProductBinding,
         private val onBuyClick: (Product, Int) -> Unit
     ) :
         RecyclerView.ViewHolder(viewDataBinding.root) {
         companion object {
             @LayoutRes
-            val LAYOUT = R.layout.product_item
+            val LAYOUT = R.layout.item_product
         }
 
         @SuppressLint("SetTextI18n")
