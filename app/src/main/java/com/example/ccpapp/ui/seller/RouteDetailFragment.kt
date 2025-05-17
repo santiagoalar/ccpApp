@@ -95,6 +95,7 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
         binding.tvRouteZone.text = "Zona: ${route.zone}"
         binding.tvRouteCreatedAt.text = "Creada el: ${formatDate(route.createdAt)}"
         binding.tvRouteUpdatedAt.text = "Actualizada el: ${formatDate(route.updatedAt)}"
+        binding.tvDueDate.text = formatDate(route.dueToDate)
 
         // Actualizar la lista de waypoints
         val sortedWaypoints = route.waypoints.sortedBy { it.order }

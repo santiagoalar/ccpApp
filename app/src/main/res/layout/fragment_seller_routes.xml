@@ -7,23 +7,57 @@
     android:background="@color/black"
     tools:context=".ui.seller.RoutesFragment">
 
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Rutas de visitas"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <LinearLayout
-        android:id="@+id/headerLayout"
+        android:id="@+id/buttonsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:gravity="end"
+        android:padding="5dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
-        <TextView
+        <Button
+            android:id="@+id/btnDatePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rutas de visitas"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:text="Seleccionar Fecha"
+            android:textAllCaps="false"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/btnClearDate"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Borrar filtro de fecha"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="@color/white" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvSelectedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/buttonsLayout"
+        tools:text="Fecha seleccionada: 12/05/2023"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/routesRecyclerView"
@@ -32,7 +66,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
+        app:layout_constraintTop_toBottomOf="@id/tvSelectedDate" />
 
     <TextView
         android:id="@+id/emptyView"
