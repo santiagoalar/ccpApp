@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.ccpapp.models.Client
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
 import com.example.ccpapp.network.TokenManager
+import com.example.ccpapp.repositories.ClientRepository
 import com.example.ccpapp.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,13 +22,20 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val tokenManager = TokenManager(application.applicationContext)
     private val userRepository = UserRepository(application)
+    private val clientRepository = ClientRepository(application)
 
-    private val _clients = MutableLiveData<List<User>>()
+    private val _clients = MutableLiveData<List<Client>>()
     private val _postUserResult = MutableLiveData<Boolean>()
     private val _authUserResult = MutableLiveData<TokenInfo>()
     private val _tokenUserResult = MutableLiveData<User?>()
+    private val _selectedClient = MutableLiveData<Client>()
 
-    val clients: LiveData<List<User>>
+    // Mapa para almacenar la relación entre el ID del cliente y su nombre
+    private val _clientsMap = MutableLiveData<Map<String, String>>(mapOf())
+    val clientsMap: LiveData<Map<String, String>>
+        get() = _clientsMap
+
+    val clients: LiveData<List<Client>>
         get() = _clients
 
     val postUserResult: LiveData<Boolean>
@@ -37,6 +46,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     val tokenUserResult: MutableLiveData<User?>
         get() = _tokenUserResult
+
+    val selectedClient: LiveData<Client>
+        get() = _selectedClient
 
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
 
@@ -113,18 +125,27 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshClients(userId: String) {
+    fun refreshClients() {
         viewModelScope.launch {
             val token: String = tokenManager.getToken()
             try {
-                val clientsList = userRepository.getAllClients(token, userId)
+                val userId = tokenManager.getUserId()
+                val clientsList = clientRepository.getAllClients(token, userId)
                 _clients.value = clientsList
+
+                val clientIdToNameMap = clientsList.associate { it.id to it.clientName }
+                _clientsMap.value = clientIdToNameMap
+                
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (e: Exception) {
                 _eventNetworkError.value = true
             }
         }
+    }
+
+    fun setSelectedClient(client: Client) {
+        _selectedClient.value = client
     }
 
 }

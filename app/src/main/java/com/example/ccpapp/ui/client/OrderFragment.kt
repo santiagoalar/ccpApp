@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.ccpapp.databinding.FragmentOrderBinding
+import com.example.ccpapp.databinding.FragmentClientOrderBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class OrderFragment : Fragment() {
 
-    private var _binding: FragmentOrderBinding? = null
+    private var _binding: FragmentClientOrderBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,7 +19,7 @@ class OrderFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentOrderBinding.inflate(inflater, container, false)
+        _binding = FragmentClientOrderBinding.inflate(inflater, container, false)
         return binding.root
     }
 

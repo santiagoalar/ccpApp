@@ -36,7 +36,7 @@ class ClientFragment : Fragment() {
 
         viewModelAdapter = ProductAdapter { product, quantity ->
             if (quantity > 0) {
-                val price = product.price ?: 0.0
+                val price = product.price
                 purchasedProducts.add(product)
                 binding.cartBadge.visibility = View.VISIBLE
             }
@@ -67,16 +67,24 @@ class ClientFragment : Fragment() {
 
         viewModel.products.observe(viewLifecycleOwner) { products ->
             products?.let {
-                val updatedProducts = it.map { product ->
-                    val matchingProductSelected = cartItems.find { selected ->
-                        selected.id == product.id
+                if (it.isEmpty()) {
+                    binding.emptyView.visibility = View.VISIBLE
+                    binding.recyclerViewProducts.visibility = View.GONE
+                } else {
+                    binding.emptyView.visibility = View.GONE
+                    binding.recyclerViewProducts.visibility = View.VISIBLE
+                    val updatedProducts = it.map { product ->
+                        val matchingProductSelected = cartItems.find { selected ->
+                            selected.id == product.id
+                        }
+                        product.copy(
+                            stockSelected = matchingProductSelected?.quantity ?: 0
+                        )
                     }
-                    product.copy(
-                        stockSelected = matchingProductSelected?.quantity ?: 0
-                    )
+                    viewModelAdapter?.products = updatedProducts
                 }
-                viewModelAdapter?.products = updatedProducts
             }
+            binding.progressBar.visibility = View.GONE
         }
 
         viewModel.refreshProducts()

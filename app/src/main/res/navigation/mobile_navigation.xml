@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_client" />
     <fragment
         android:id="@+id/sellerFragment"
-        android:name="com.example.ccpapp.ui.client.SellerFragment"
+        android:name="com.example.ccpapp.ui.seller.SellerFragment"
         android:label="fragment_director"
         tools:layout="@layout/fragment_seller">
         <action
@@ -44,7 +44,7 @@
         android:label="ShoppingCartFragment" />
     <fragment
         android:id="@+id/clientDetailFragment"
-        android:name="com.example.ccpapp.ui.client.ClientDetailFragment"
+        android:name="com.example.ccpapp.ui.seller.ClientDetailFragment"
         android:label="ClientDetailFragment">
         <argument
             android:name="clientId"
@@ -59,5 +59,13 @@
         android:id="@+id/orderFragment"
         android:name="com.example.ccpapp.ui.client.OrderFragment"
         android:label="OrderFragment" />
+    <fragment
+        android:id="@+id/visitRecordsFragment"
+        android:name="com.example.ccpapp.ui.seller.VisitRecordsFragment"
+        android:label="VisitRecordsFragment" />
+    <fragment
+        android:id="@+id/routesFragment"
+        android:name="com.example.ccpapp.ui.seller.RoutesFragment"
+        android:label="RoutesFragment" />
 
 </navigation>

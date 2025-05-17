@@ -7,7 +7,11 @@
 
     <item android:title=""
         android:icon="@drawable/ic_truck"
-        android:id="@+id/orderFragment"/>
+        android:id="@+id/visitRecordsFragment"/>
+
+    <item android:title=""
+        android:icon="@drawable/stops"
+        android:id="@+id/routesFragment"/>
 
     <item android:title=""
         android:icon="@drawable/settings"

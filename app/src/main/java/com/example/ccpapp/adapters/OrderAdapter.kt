@@ -11,6 +11,8 @@ import com.example.ccpapp.R
 import com.example.ccpapp.databinding.ItemOrderBinding
 import com.example.ccpapp.models.Order
 import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class OrderAdapter() : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
@@ -44,6 +46,7 @@ class OrderAdapter() : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
 
     override fun getItemCount(): Int = orders.size
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         holder.bind(orders[position])
     }
@@ -56,10 +59,12 @@ class OrderAdapter() : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
             val LAYOUT = R.layout.item_order
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
+        @SuppressLint("SetTextI18n")
         fun bind(order: Order) {
             val format = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
 
-            viewDataBinding.textOrderId.text = "Orden #${order.id}"
+            //viewDataBinding.textOrderId.text = "Orden #${order.id}"
             viewDataBinding.textDate.text = "Fecha: ${formatDate(order.createdAt)}"
             viewDataBinding.textPrice.text =
                 "Total: ${format.format(order.total)} ${order.currency}"
@@ -72,15 +77,13 @@ class OrderAdapter() : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
         @RequiresApi(Build.VERSION_CODES.O)
         private fun formatDate(dateString: String): String {
             return try {
-                val inputFormat = java.time.format.DateTimeFormatter.ISO_DATE_TIME
-                val outputFormat = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
-                val dateTime = java.time.LocalDateTime.parse(dateString, inputFormat)
+                val inputFormat = DateTimeFormatter.ISO_DATE_TIME
+                val outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                val dateTime = LocalDateTime.parse(dateString, inputFormat)
                 dateTime.format(outputFormat)
             } catch (e: Exception) {
                 dateString
             }
         }
     }
-
-
 }
