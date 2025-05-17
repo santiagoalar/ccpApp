@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccpapp.adapters.DeliveryAdapter
-import com.example.ccpapp.databinding.FragmentListBinding
+import com.example.ccpapp.databinding.FragmentClientOrderListBinding
 import com.example.ccpapp.viewmodels.DeliveryViewModel
 
 
 class DeliveryListFragment : Fragment() {
 
-    private var _binding: FragmentListBinding? = null
+    private var _binding: FragmentClientOrderListBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: DeliveryViewModel
     private lateinit var adapter: DeliveryAdapter
@@ -24,7 +24,7 @@ class DeliveryListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentListBinding.inflate(inflater, container, false)
+        _binding = FragmentClientOrderListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -40,8 +40,6 @@ class DeliveryListFragment : Fragment() {
         viewModel.deliveries.observe(viewLifecycleOwner) { deliveries ->
             deliveries?.let {
                 adapter.deliveries = it
-                
-                // Mostrar mensaje si la lista está vacía
                 if (it.isEmpty()) {
                     binding.emptyView.visibility = View.VISIBLE
                     binding.recyclerView.visibility = View.GONE

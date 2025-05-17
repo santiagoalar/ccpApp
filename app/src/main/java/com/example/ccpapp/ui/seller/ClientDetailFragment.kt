@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.ccpapp.databinding.FragmentClientDetailBinding
+import com.example.ccpapp.databinding.FragmentSellerClientDetailBinding
 import com.example.ccpapp.models.Client
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.UserViewModel
@@ -24,7 +24,7 @@ import java.util.Locale
 
 class ClientDetailFragment : Fragment() {
 
-    private var _binding: FragmentClientDetailBinding? = null
+    private var _binding: FragmentSellerClientDetailBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var viewModel: UserViewModel
@@ -37,7 +37,7 @@ class ClientDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentClientDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentSellerClientDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 

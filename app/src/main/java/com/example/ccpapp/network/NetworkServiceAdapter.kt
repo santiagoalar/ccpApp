@@ -14,9 +14,11 @@ import com.example.ccpapp.models.Delivery
 import com.example.ccpapp.models.Order
 import com.example.ccpapp.models.Product
 import com.example.ccpapp.models.Rol
+import com.example.ccpapp.models.Route
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
 import com.example.ccpapp.models.VisitRecord
+import com.example.ccpapp.models.WayPoint
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
@@ -137,14 +139,8 @@ class NetworkServiceAdapter(context: Context) {
                 }
             },
             { error ->
-                try {
-                    val fallbackJson = readJsonFromAssets(appContext, "product2Json.json")
-                    val fallbackArray = JSONArray(fallbackJson)
-                    val fallbackList = parseProductList(fallbackArray)
-                    cont.resume(fallbackList)
-                } catch (ex: Exception) {
-                    cont.resumeWithException(ex)
-                }
+                cont.resume(emptyList())
+                Log.d("Product API Error", error.message ?: "Error desconocido")
             }
         ) {
             override fun getHeaders(): MutableMap<String, String> {
@@ -348,16 +344,16 @@ class NetworkServiceAdapter(context: Context) {
     private fun parseDeliveryList(jsonArray: JSONArray): List<Delivery> {
         val deliveryList = mutableListOf<Delivery>()
         for (i in 0 until jsonArray.length()) {
-            val product = jsonArray.getJSONObject(i)
+            val delivery = jsonArray.getJSONObject(i)
             deliveryList.add(
                 Delivery(
-                    id = product.getString("id"),
-                    name = product.getString("name"),
-                    arrivalDate = product.getString("arrivalDate"),
-                    location = product.getString("location"),
-                    clientId = product.getString("clientId"),
-                    status = product.getString("status"),
-                    duration = product.getString("duration"),
+                    id = delivery.getString("id"),
+                    name = delivery.getString("name"),
+                    arrivalDate = delivery.getString("arrivalDate"),
+                    location = delivery.getString("location"),
+                    clientId = delivery.getString("clientId"),
+                    status = delivery.getString("status"),
+                    duration = delivery.getString("duration"),
                 )
             )
         }
@@ -433,5 +429,68 @@ class NetworkServiceAdapter(context: Context) {
         return visitList
     }
 
+    suspend fun getAllRoutesByUserAndDate(
+        userId: String,
+        date: String,
+        token: String
+    ): List<Route> = suspendCoroutine { cont ->
+        val url = "${StaticConstants.API_BASE_URL}routes/users/${userId}/routes?due_to=${date}"
+        val request = object : JsonArrayRequest(
+            Method.GET, url, null,
+            { response ->
+                try {
+                    val routeList = parseRouteList(response)
+                    cont.resume(routeList)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                cont.resume(emptyList())
+                Log.d("Delivery API Error", error.message ?: "Error desconocido")
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                return headers
+            }
+        }
+        requestQueue.add(request)
+    }
+
+    private fun parseRouteList(jsonArray: JSONArray): List<Route> {
+        val routeList = mutableListOf<Route>()
+        for (i in 0 until jsonArray.length()) {
+            val route = jsonArray.getJSONObject(i)
+            routeList.add(
+                Route(
+                    id = route.getString("id"),
+                    name = route.getString("name"),
+                    description = route.getString("description"),
+                    createdAt = route.getString("createdAt"),
+                    updatedAt = route.getString("updatedAt"),
+                    dueToDate = route.getString("dueToDate"),
+                    userId = route.getString("userId"),
+                    zone = route.getString("zone"),
+                    waypoints = route.getJSONArray("waypoints").let { waypointsArray ->
+                        List(waypointsArray.length()) { index ->
+                            val waypoint = waypointsArray.getJSONObject(index)
+                            WayPoint(
+                                id = waypoint.getString("id"),
+                                name = waypoint.getString("name"),
+                                latitude = waypoint.getDouble("latitude"),
+                                longitude = waypoint.getDouble("longitude"),
+                                address = waypoint.getString("address"),
+                                order = waypoint.getInt("order"),
+                                createdAt = waypoint.getString("createdAt")
+                            )
+                        }
+                    }
+                )
+            )
+        }
+        return routeList
+    }
 
 }

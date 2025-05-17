@@ -73,11 +73,7 @@ class SellerFragment: Fragment() {
             }
 
             override fun onMakeOrderClick(client: Client) {
-                Toast.makeText(
-                    context,
-                    "Crear pedido para ${client.clientName}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, "Crear pedido para ${client.clientName}", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -94,6 +90,8 @@ class SellerFragment: Fragment() {
             }
         }
 
+        val tokenManager = TokenManager(requireContext())
+        val salesmanId = tokenManager.getUserId()
         viewModel.refreshClients()
     }
 

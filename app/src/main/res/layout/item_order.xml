@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <TextView
+        <!--TextView
             android:id="@+id/textOrderId"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Orden #12345" />
+            tools:text="Orden #12345" /-->
 
         <TextView
             android:id="@+id/textDate"
@@ -31,7 +31,7 @@
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textOrderId"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Fecha: 15/06/2023" />
 
         <TextView

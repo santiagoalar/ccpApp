@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ccpapp.adapters.VisitRecordAdapter
-import com.example.ccpapp.databinding.FragmentVisitRecordsBinding
+import com.example.ccpapp.databinding.FragmentSellerVisitRecordsBinding
 import com.example.ccpapp.viewmodels.UserViewModel
 import com.example.ccpapp.viewmodels.VisitRecordsViewModel
 
 class VisitRecordsFragment : Fragment() {
 
-    private var _binding: FragmentVisitRecordsBinding? = null
+    private var _binding: FragmentSellerVisitRecordsBinding? = null
     private val binding get() = _binding!!
     private lateinit var visitViewModel: VisitRecordsViewModel
     private lateinit var userViewModel: UserViewModel
@@ -25,7 +25,7 @@ class VisitRecordsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentVisitRecordsBinding.inflate(inflater, container, false)
+        _binding = FragmentSellerVisitRecordsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
