@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.CartAdapter
 import com.example.ccpapp.adapters.ClientAdapter
-import com.example.ccpapp.adapters.ProductAdapter
 import com.example.ccpapp.adapters.ProductAdapter.CartStorage
 import com.example.ccpapp.databinding.FragmentShoppingCartBinding
 import com.example.ccpapp.models.Product
@@ -44,7 +43,7 @@ class ShoppingCartFragment : Fragment() {
         _binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
 
         binding.buttonBack.setOnClickListener {
-            navc?.navigate(R.id.clientFragment)
+            navc?.popBackStack()
         }
 
         binding.buttonCheckout.setOnClickListener {

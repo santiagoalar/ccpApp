@@ -10,7 +10,7 @@ import com.example.ccpapp.models.CartItem
 
 class CartAdapter(
     private val cartItems: MutableList<CartItem>,
-    private val onCartChanged: () -> Unit // Asegurarse de que esta función sea requerida
+    private val onCartChanged: () -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     class CartViewHolder(private val binding: CartItemBinding) :
@@ -29,7 +29,7 @@ class CartAdapter(
                     binding.textProductPrice.text = "$${cartItem.unitPrice * newQuantity}"
                     cartItem.quantity = newQuantity
                     cartItem.totalPrice = cartItem.unitPrice * newQuantity
-                    onCartChanged() // Actualizar el total
+                    onCartChanged()
                 }
             }
             binding.buttonIncrease.setOnClickListener {
@@ -41,7 +41,7 @@ class CartAdapter(
                     binding.textProductPrice.text = "$${cartItem.unitPrice * newQuantity}"
                     cartItem.quantity = newQuantity
                     cartItem.totalPrice = cartItem.unitPrice * newQuantity
-                    onCartChanged() // Actualizar el total
+                    onCartChanged()
                 }
             }
             binding.buttonDelete.setOnClickListener {
@@ -49,7 +49,7 @@ class CartAdapter(
                 if (position != RecyclerView.NO_POSITION) {
                     showDeleteConfirmationDialog(binding.root.context) {
                         onDeleteClick(position)
-                        onCartChanged() // Actualizar el total después de eliminar
+                        onCartChanged()
                     }
                 }
             }
@@ -85,7 +85,7 @@ class CartAdapter(
             cartItems.removeAt(pos)
             notifyItemRemoved(pos)
             notifyItemRangeChanged(pos, cartItems.size)
-        }, onCartChanged) // Pasar la función onCartChanged al ViewHolder
+        }, onCartChanged)
     }
 
     override fun getItemCount(): Int = cartItems.size

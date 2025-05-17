@@ -73,7 +73,8 @@ class SellerFragment: Fragment() {
             }
 
             override fun onMakeOrderClick(client: Client) {
-                Toast.makeText(context, "Crear pedido para ${client.clientName}", Toast.LENGTH_SHORT).show()
+                viewModel.setSelectedClient(client)
+                navc?.navigate(R.id.action_sellerFragment_to_sellerClientProductFragment)
             }
         })
 
@@ -92,7 +93,7 @@ class SellerFragment: Fragment() {
 
         val tokenManager = TokenManager(requireContext())
         val salesmanId = tokenManager.getUserId()
-        viewModel.refreshClients()
+        viewModel.refreshClients() //TODO
     }
 
 }
