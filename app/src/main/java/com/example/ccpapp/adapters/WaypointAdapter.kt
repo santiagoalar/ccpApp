@@ -44,10 +44,10 @@ class WaypointAdapter : RecyclerView.Adapter<WaypointAdapter.WaypointViewHolder>
         @SuppressLint("SetTextI18n")
         fun bind(waypoint: WayPoint) {
             binding.tvWaypointName.text = waypoint.name
+            binding.tvWaypointOrder.text = "Orden: ${waypoint.order}"
             binding.tvCreationDate.text = "Fecha de creación: ${formatDate(waypoint.createdAt)}"
+            binding.tvAddress.text = "Dirección: ${waypoint.address}"
             binding.tvCoordinates.text = "Coordenadas: ${waypoint.latitude}, ${waypoint.longitude}"
-            binding.tvLatitude.text = "Latitud: ${waypoint.latitude}"
-            binding.tvLongitude.text = "Longitud: ${waypoint.longitude}"
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

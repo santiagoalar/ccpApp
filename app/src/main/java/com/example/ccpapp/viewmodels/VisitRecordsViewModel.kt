@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 open class VisitRecordsViewModel(application: Application) : AndroidViewModel(application) {
     private val tokenManager = TokenManager(application.applicationContext)
@@ -62,7 +64,16 @@ open class VisitRecordsViewModel(application: Application) : AndroidViewModel(ap
                     val token = tokenManager.getToken() ?: ""
                     val salesmanId = tokenManager.getUserId()
                     val visitRecords = visitRecordsRepository.getAllVisitRecords(token, salesmanId)
-                    _visitRecords.postValue(visitRecords)
+                    val sortedVisits = visitRecords.sortedByDescending { visit ->
+                        try {
+                            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                                .parse(visit.visitDate)?.time ?: 0
+                        } catch (e: Exception) {
+                            0
+                        }
+                    }
+                    
+                    _visitRecords.postValue(sortedVisits)
                 }
                 _eventNetworkError.postValue(false)
                 _isNetworkErrorShown.postValue(false)

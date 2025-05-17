@@ -1,7 +1,11 @@
 package com.example.ccpapp.ui.seller
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,8 +22,10 @@ import com.example.ccpapp.databinding.FragmentSellerClientDetailBinding
 import com.example.ccpapp.models.Client
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.UserViewModel
+import com.example.ccpapp.viewmodels.VideoRecordViewModel
 import com.example.ccpapp.viewmodels.VisitRecordsViewModel
 import org.json.JSONObject
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,6 +37,7 @@ class ClientDetailFragment : Fragment() {
 
     private lateinit var viewModel: UserViewModel
     private lateinit var visitRecordsViewModel: VisitRecordsViewModel
+    private lateinit var videoRecordViewModel: VideoRecordViewModel
     private lateinit var tokenManager: TokenManager
     private var client: Client? = null
 

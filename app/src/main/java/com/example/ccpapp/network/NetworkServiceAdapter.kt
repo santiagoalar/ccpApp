@@ -516,4 +516,29 @@ class NetworkServiceAdapter(context: Context) {
         return routeList
     }
 
+    suspend fun sendVideo(videoFile: java.io.File, token: String): JSONObject =
+        suspendCoroutine { cont ->
+            val url = "${StaticConstants.API_BASE_URL}video/upload"
+            val request = object : JsonObjectRequest(
+                Method.POST, url, null,
+                { response ->
+                    cont.resume(response)
+                    Log.d("response", "response successful")
+                },
+                { error ->
+                    cont.resumeWithException(error)
+                    Log.d("response failed", error.message.toString())
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] = "Bearer $token"
+                    return headers
+                }
+            }
+
+            Log.d("request", request.toString())
+            requestQueue.add(request)
+        }
+
 }

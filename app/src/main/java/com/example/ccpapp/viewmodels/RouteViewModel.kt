@@ -25,7 +25,10 @@ class RouteViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun setSelectedRoute(route: Route) {
-        _selectedRoute.value = route
+        // Ordenar los waypoints por el atributo order antes de establecer la ruta seleccionada
+        val sortedWaypoints = route.waypoints.sortedBy { it.order }
+        val routeWithSortedWaypoints = route.copy(waypoints = sortedWaypoints)
+        _selectedRoute.value = routeWithSortedWaypoints
     }
     
     fun setSelectedDate(date: String) {
@@ -50,7 +53,13 @@ class RouteViewModel(application: Application) : AndroidViewModel(application) {
                 val userId = tokenManager.getUserId()
                 val routes =
                     routeRepository.getAllRoutesByUser(userId = userId, date = date, token = token)
-                _routes.value = routes
+
+                val routesWithSortedWaypoints = routes.map { route ->
+                    val sortedWaypoints = route.waypoints.sortedBy { it.order }
+                    route.copy(waypoints = sortedWaypoints)
+                }
+
+                _routes.value = routesWithSortedWaypoints
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (e: Exception) {
@@ -59,3 +68,4 @@ class RouteViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 }
+

@@ -78,8 +78,7 @@ class RoutesFragment : Fragment(), RouteAdapter.OnRouteClickListener {
             if (date.isNotEmpty()) {
                 binding.tvSelectedDate.visibility = View.VISIBLE
                 binding.tvSelectedDate.text = "Fecha: $date"
-                
-                // Cambiar el texto del botón con la fecha formateada
+
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 try {
                     val parsedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
@@ -91,7 +90,6 @@ class RoutesFragment : Fragment(), RouteAdapter.OnRouteClickListener {
                 }
             } else {
                 binding.tvSelectedDate.visibility = View.GONE
-                // Restaurar el texto original del botón
                 binding.btnDatePicker.text = "Seleccionar Fecha"
             }
         }
@@ -123,8 +121,6 @@ class RoutesFragment : Fragment(), RouteAdapter.OnRouteClickListener {
                 calendar.set(selectedYear, selectedMonth, selectedDay)
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 val formattedDate = dateFormat.format(calendar.time)
-
-                // Mostrar la fecha seleccionada y cargar rutas para esa fecha
                 routeViewModel.setSelectedDate(formattedDate)
                 binding.progressBar.visibility = View.VISIBLE
             },
@@ -133,7 +129,6 @@ class RoutesFragment : Fragment(), RouteAdapter.OnRouteClickListener {
             day
         )
 
-        // Agregar botón para limpiar la fecha
         datePickerDialog.setButton(
             DatePickerDialog.BUTTON_NEUTRAL,
             "Limpiar"
