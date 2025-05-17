@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#333333">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,51 +15,64 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tvRouteName"
+            android:id="@+id/tvWaypointName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Nombre de la Ruta" />
+            tools:text="Nombre del punto de ruta" />
 
         <TextView
-            android:id="@+id/tvRouteDate"
+            android:id="@+id/tvCreationDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvWaypointName"
+            tools:text="Fecha de creación: 25/05/2023" />
+
+        <TextView
+            android:id="@+id/tvCoordinates"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreationDate"
+            tools:text="Coordenadas: 40.7128° N, 74.0060° W" />
+
+        <TextView
+            android:id="@+id/tvLatitude"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRouteName"
-            tools:text="Creada el: 12/05/2023" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCoordinates"
+            tools:text="Latitud: 40.7128° N" />
 
         <TextView
-            android:id="@+id/tvDescription"
+            android:id="@+id/tvLongitude"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRouteDate"
-            tools:text="Descripción de la ruta que se muestra en dos líneas máximo. Si es más larga se corta con puntos suspensivos." />
-
-        <Button
-            android:id="@+id/btnViewMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Ver más"
-            android:textAllCaps="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
+            tools:text="Longitud: 74.0060° W" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
