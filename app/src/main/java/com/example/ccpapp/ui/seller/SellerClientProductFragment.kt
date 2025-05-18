@@ -26,7 +26,6 @@ class SellerClientProductFragment : Fragment() {
 
     private lateinit var viewModel: ProductViewModel
     private lateinit var recyclerView: RecyclerView
-    private val userViewModel: UserViewModel by viewModels({ requireActivity() })
     private lateinit var viewModelAdapter: ProductAdapter
     private var navc: NavController? = null
     val cartItems = ProductAdapter.CartStorage.getItems()
@@ -48,6 +47,10 @@ class SellerClientProductFragment : Fragment() {
 
         binding.buttonCart.setOnClickListener {
             navc?.navigate(R.id.shoppingCartFragment)
+        }
+
+        binding.btnBack.setOnClickListener {
+            navc?.navigate(R.id.sellerFragment)
         }
 
         return binding.root

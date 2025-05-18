@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_home, R.id.signUpFragment, R.id.shoppingCartFragment,
-                R.id.clientDetailFragment, R.id.routeDetailFragment -> {
+                R.id.clientDetailFragment, R.id.routeDetailFragment,
+                R.id.sellerClientProductFragment -> {
                     bottomNavigationView.visibility = android.view.View.GONE
                 }
                 else -> {

@@ -78,7 +78,11 @@ class NetworkServiceAdapter(context: Context) {
                     val token = response.getString("token")
                     val id = response.getString("id")
                     val expiresAt = response.getString("expiresAt")
-                    val tokenInfo = TokenInfo(expiresAt = expiresAt, id = id, token = token)
+                    val tokenInfo = TokenInfo(
+                        expiresAt = expiresAt,
+                        id = id,
+                        token = token
+                    )
                     cont.resume(tokenInfo)
                     Log.d("response", "response successful: $tokenInfo")
                 } catch (e: Exception) {

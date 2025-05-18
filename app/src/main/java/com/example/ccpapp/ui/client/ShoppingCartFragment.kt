@@ -2,6 +2,7 @@ package com.example.ccpapp.ui.client
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,11 @@ import com.bumptech.glide.Glide
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.CartAdapter
 import com.example.ccpapp.adapters.ClientAdapter
+import com.example.ccpapp.adapters.ClientAdapter.UserStorage
 import com.example.ccpapp.adapters.ProductAdapter.CartStorage
 import com.example.ccpapp.databinding.FragmentShoppingCartBinding
 import com.example.ccpapp.models.Product
+import com.example.ccpapp.models.Rol
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.CartItemViewModel
 import com.example.ccpapp.viewmodels.ProductViewModel
@@ -30,9 +33,8 @@ class ShoppingCartFragment : Fragment() {
     private lateinit var viewModel: ProductViewModel
     private lateinit var viewModelPurchase: CartItemViewModel
     private var navc: NavController? = null
-    private val purchasedProducts = mutableListOf<Product>()
     val cartItems = CartStorage.getItems().toMutableList()
-    val user = ClientAdapter.UserStorage
+    val user = UserStorage
     private lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
@@ -44,6 +46,17 @@ class ShoppingCartFragment : Fragment() {
 
         binding.buttonBack.setOnClickListener {
             navc?.popBackStack()
+        }
+
+        binding.buttonBack.setOnClickListener {
+            val role = UserStorage.getZeroUser()?.role?.name
+            if (role.equals(Rol.CLIENTE.name)) {
+                navc?.navigate(R.id.clientFragment)
+            } else if (role.equals(Rol.VENDEDOR.name)) {
+                navc?.navigate(R.id.sellerClientProductFragment)
+            } else if (role.equals(Rol.TRANSPORTISTA.name)) {
+                navc?.navigate(R.id.carrierFragment)
+            }
         }
 
         binding.buttonCheckout.setOnClickListener {
@@ -68,8 +81,8 @@ class ShoppingCartFragment : Fragment() {
                 put("clientInfo", JSONObject().apply {
                     put("name", user.getUsers()[0].name)
                     put("address", "Calle 12 # 11-30")
-                    put("email",  user.getUsers()[0].email)
-                    put("phone",  user.getUsers()[0].phone)
+                    put("email", user.getUsers()[0].email)
+                    put("phone", user.getUsers()[0].phone)
                 })
                 put("payment", JSONObject().apply {
                     put("amount", subtotal)
@@ -130,7 +143,9 @@ class ShoppingCartFragment : Fragment() {
 
         val cartItems = CartStorage.getItems().toMutableList()
         val adapter = CartAdapter(cartItems) {
-
+            Log.d("::::::CartAdapter::::::", CartStorage.getItems().toString())
+            // Ya no necesitamos llamar a CartStorage.removeItem aquí porque
+            // se maneja directamente en el adaptador
             val updatedTotal = CartStorage.getItems().sumOf { it.totalPrice }
             binding.textTotal.text = "Total: $$updatedTotal"
         }

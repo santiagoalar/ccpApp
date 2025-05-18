@@ -100,5 +100,9 @@ class ClientAdapter(
         fun clear() {
             users.clear()
         }
+
+        fun getZeroUser(): User? {
+            return if (users.isNotEmpty()) users[0] else null
+        }
     }
 }

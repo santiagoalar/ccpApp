@@ -18,7 +18,7 @@ class CartAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(cartItem: CartItem, onDeleteClick: (Int) -> Unit, onCartChanged: () -> Unit) {
-            binding.textProductName.text = cartItem.name
+            binding.textProductName.text = "${cartItem.name} - $${cartItem.unitPrice}"
             binding.textProductPrice.text = "$${cartItem.totalPrice}"
             binding.textProductQuantity.text = "${cartItem.quantity}"
             binding.buttonDecrease.setOnClickListener {
@@ -49,9 +49,13 @@ class CartAdapter(
                 if (position != RecyclerView.NO_POSITION) {
                     showDeleteConfirmationDialog(binding.root.context) {
                         onDeleteClick(position)
+                        cartItem.totalPrice = 0
+                        cartItem.quantity = 0
+                        ProductAdapter.CartStorage.removeItem(cartItem.id)
                         onCartChanged()
                     }
                 }
+
             }
         }
 

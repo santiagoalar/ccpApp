@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import com.example.ccpapp.adapters.ClientAdapter
+import com.example.ccpapp.adapters.ClientAdapter.UserStorage
+import com.example.ccpapp.adapters.ProductAdapter.CartStorage
 import com.example.ccpapp.databinding.FragmentSettingBinding
 import com.example.ccpapp.models.User
 import com.example.ccpapp.viewmodels.UserViewModel
@@ -35,28 +36,25 @@ class SettingFragment : Fragment() {
 
         navc = view.findNavController()
         viewModel = UserViewModel(requireActivity().application)
-        
-        // Obtener el usuario actual desde ClientStorage
+
         val currentUser = getCurrentUser()
-        
-        // Llenar los campos visuales con la información del usuario
+
         if (currentUser != null) {
             binding.userName.text = currentUser.name
             binding.userPhone.text = currentUser.phone
             binding.userEmail.text = currentUser.email
             binding.userAddress.text = "Calle 24 #123, Ciudad"
         }
-        
-        // Configurar el botón de cerrar sesión
+
         binding.logoutButton.setOnClickListener {
-            // Implementar lógica para cerrar sesión
-            // Por ejemplo: limpiar tokens, navegar al login, etc.
+            CartStorage.clearCart()
+            UserStorage.clear()
             navc?.navigate(com.example.ccpapp.R.id.navigation_home)
         }
     }
     
     private fun getCurrentUser(): User? {
-        val users = ClientAdapter.UserStorage.getUsers()
+        val users = UserStorage.getUsers()
         return if (users.isNotEmpty()) users[0] else null
     }
 
