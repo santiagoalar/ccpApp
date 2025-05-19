@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_sellerFragment_to_clientDetailFragment"
             app:destination="@id/clientDetailFragment" />
+        <action
+            android:id="@+id/action_sellerFragment_to_sellerClientProductFragment"
+            app:destination="@id/sellerClientProductFragment" />
     </fragment>
     <fragment
         android:id="@+id/routesFragment"
@@ -78,6 +81,10 @@
         android:id="@+id/visitRecordsFragment"
         android:name="com.example.ccpapp.ui.seller.VisitRecordsFragment"
         android:label="VisitRecordsFragment" />
+    <fragment
+        android:id="@+id/sellerClientProductFragment"
+        android:name="com.example.ccpapp.ui.seller.SellerClientProductFragment"
+        android:label="SellerClientProductFragment" />
 
 
 </navigation>

@@ -214,6 +214,75 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvClientCountry" />
 
+            <!-- Nuevo recuadro gris oscuro con texto y botón de grabar video -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewAI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="#333333"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/btnRegisterVisit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvAIRecommendation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Graba un video para obtener las mejores recomendaciones en tu local por parte de la IA. Nuestro análisis inteligente te ayudará a mejorar la presentación y organización de tus productos."
+                        android:textColor="@color/white"
+                        android:textStyle="italic"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <!-- Nuevo recuadro de estado de procesamiento -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewProcessingStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:cardBackgroundColor="#222222"
+                        app:cardCornerRadius="6dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvAIRecommendation"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:id="@+id/tvProcessingStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="No se ha procesado un video aún"
+                            android:textAlignment="center"
+                            android:textColor="#F44336"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </androidx.cardview.widget.CardView>
+
+                    <Button
+                        android:id="@+id/btnRecordVideo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Grabar video IA"
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/holo_blue_dark"
+                        android:textColor="@color/white"
+                        app:layout_constraintTop_toBottomOf="@id/cardViewProcessingStatus"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

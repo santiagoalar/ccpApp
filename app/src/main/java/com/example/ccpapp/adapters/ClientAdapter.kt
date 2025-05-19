@@ -7,11 +7,14 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
-import com.example.ccpapp.databinding.ClientItemBinding
+import com.example.ccpapp.databinding.ItemClientBinding
 import com.example.ccpapp.models.Client
 import com.example.ccpapp.models.User
 
-class ClientAdapter(private val clickListener: OnClientClickListener? = null) : RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
+class ClientAdapter(
+    private val clickListener: OnClientClickListener? = null
+) :
+    RecyclerView.Adapter<ClientAdapter.ClientViewHolder>() {
 
     interface OnClientClickListener {
         fun onClientClick(client: Client)
@@ -34,7 +37,7 @@ class ClientAdapter(private val clickListener: OnClientClickListener? = null) : 
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientViewHolder {
-        val withDataBinding: ClientItemBinding = DataBindingUtil.inflate(
+        val withDataBinding: ItemClientBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             ClientViewHolder.LAYOUT,
             parent,
@@ -66,11 +69,11 @@ class ClientAdapter(private val clickListener: OnClientClickListener? = null) : 
         }
     }
 
-    class ClientViewHolder(val binding: ClientItemBinding) :
+    class ClientViewHolder(val binding: ItemClientBinding) :
         RecyclerView.ViewHolder(binding.root) {
         companion object {
             @LayoutRes
-            val LAYOUT = R.layout.client_item
+            val LAYOUT = R.layout.item_client
         }
 
         @SuppressLint("SetTextI18n")
@@ -84,6 +87,8 @@ class ClientAdapter(private val clickListener: OnClientClickListener? = null) : 
 
     object UserStorage {
         private val users = mutableListOf<User>()
+        private val tempUser = mutableListOf<Client>()
+        private var videoId = mutableListOf<String>()
 
         fun addUser(user: User) {
             clear()
@@ -95,6 +100,32 @@ class ClientAdapter(private val clickListener: OnClientClickListener? = null) : 
         }
 
         fun clear() {
+            users.clear()
+        }
+
+        fun getZeroUser(): User? {
+            return if (users.isNotEmpty()) users[0] else null
+        }
+
+        fun setVideoId(id: String) {
+            videoId.clear()
+            videoId.add(id)
+        }
+
+        fun getVideoId(): String? {
+            return if (videoId.isNotEmpty()) videoId[0] else null
+        }
+
+        fun setTempUser(user: Client) {
+            tempUser.clear()
+            tempUser.add(user)
+        }
+
+        fun getTempUser(): Client? {
+            return if (tempUser.isNotEmpty()) tempUser[0] else null
+        }
+
+        fun clearTempUser() {
             users.clear()
         }
     }

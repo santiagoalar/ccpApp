@@ -2,6 +2,7 @@ package com.example.ccpapp.ui.client
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,10 @@ import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.CartAdapter
-import com.example.ccpapp.adapters.ClientAdapter
-import com.example.ccpapp.adapters.ProductAdapter
+import com.example.ccpapp.adapters.ClientAdapter.UserStorage
 import com.example.ccpapp.adapters.ProductAdapter.CartStorage
 import com.example.ccpapp.databinding.FragmentShoppingCartBinding
-import com.example.ccpapp.models.Product
+import com.example.ccpapp.models.Rol
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.CartItemViewModel
 import com.example.ccpapp.viewmodels.ProductViewModel
@@ -31,9 +31,13 @@ class ShoppingCartFragment : Fragment() {
     private lateinit var viewModel: ProductViewModel
     private lateinit var viewModelPurchase: CartItemViewModel
     private var navc: NavController? = null
-    private val purchasedProducts = mutableListOf<Product>()
     val cartItems = CartStorage.getItems().toMutableList()
-    val user = ClientAdapter.UserStorage
+    val user = UserStorage
+    var userId: String = ""
+    var userName: String = ""
+    var userEmail: String = ""
+    var userPhone: String = ""
+    var userAddress: String = ""
     private lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
@@ -44,7 +48,18 @@ class ShoppingCartFragment : Fragment() {
         _binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
 
         binding.buttonBack.setOnClickListener {
-            navc?.navigate(R.id.clientFragment)
+            navc?.popBackStack()
+        }
+
+        binding.buttonBack.setOnClickListener {
+            val role = UserStorage.getZeroUser()?.role?.name
+            if (role.equals(Rol.CLIENTE.name)) {
+                navc?.navigate(R.id.clientFragment)
+            } else if (role.equals(Rol.VENDEDOR.name)) {
+                navc?.navigate(R.id.sellerClientProductFragment)
+            } else if (role.equals(Rol.TRANSPORTISTA.name)) {
+                navc?.navigate(R.id.carrierFragment)
+            }
         }
 
         binding.buttonCheckout.setOnClickListener {
@@ -57,20 +72,35 @@ class ShoppingCartFragment : Fragment() {
                 ).show()
                 return@setOnClickListener
             }
+
+            if (UserStorage.getZeroUser()?.role?.name == Rol.CLIENTE.name){
+                userId = UserStorage.getZeroUser()?.id.toString()
+                userName = UserStorage.getZeroUser()?.name.toString()
+                userEmail = UserStorage.getZeroUser()?.email.toString()
+                userPhone = UserStorage.getZeroUser()?.phone.toString()
+                userAddress =  "Calle 12 # 11-30"
+            } else {
+                userId = UserStorage.getTempUser()?.clientId.toString()
+                userName = UserStorage.getTempUser()?.clientName.toString()
+                userEmail = UserStorage.getTempUser()?.clientEmail.toString()
+                userPhone = UserStorage.getTempUser()?.clientPhone.toString()
+                userAddress = UserStorage.getTempUser()?.address.toString()
+            }
+
             val subtotal: Int = cartItems.sumOf { it.unitPrice * it.quantity }
             val totalQuantity = cartItems.sumOf { it.quantity }
             val jsonBody = JSONObject().apply {
-                put("clientId", tokenManager.getUserId())
+                put("clientId", userId)
                 put("quantity", totalQuantity)
                 put("subtotal", subtotal)
                 put("tax", 50.96)
                 put("total", subtotal)
                 put("currency", "USD")
                 put("clientInfo", JSONObject().apply {
-                    put("name", user.getUsers()[0].name)
-                    put("address", "Calle 12 # 11-30")
-                    put("email",  user.getUsers()[0].email)
-                    put("phone",  user.getUsers()[0].phone)
+                    put("name", userName)
+                    put("address", userAddress)
+                    put("email", userEmail)
+                    put("phone", userPhone)
                 })
                 put("payment", JSONObject().apply {
                     put("amount", subtotal)
@@ -89,6 +119,7 @@ class ShoppingCartFragment : Fragment() {
                     })
                 })
             }
+            Log.d(":::::::::COMPRA::::::::", jsonBody.toString())
             viewModelPurchase.savePurchase(jsonBody)
 
             binding.successLayout.isVisible = true
@@ -102,7 +133,14 @@ class ShoppingCartFragment : Fragment() {
 
             binding.buttonAccept.setOnClickListener {
                 CartStorage.clearCart()
-                navc?.navigate(R.id.clientFragment)
+                val role = UserStorage.getZeroUser()?.role?.name ?: "VENDEDOR"
+                if (role.equals(Rol.CLIENTE.name)) {
+                    navc?.navigate(R.id.clientFragment)
+                } else if (role.equals(Rol.VENDEDOR.name)) {
+                    navc?.navigate(R.id.sellerClientProductFragment)
+                } else if (role.equals(Rol.TRANSPORTISTA.name)) {
+                    navc?.navigate(R.id.carrierFragment)
+                }
             }
         }
 
@@ -131,7 +169,6 @@ class ShoppingCartFragment : Fragment() {
 
         val cartItems = CartStorage.getItems().toMutableList()
         val adapter = CartAdapter(cartItems) {
-
             val updatedTotal = CartStorage.getItems().sumOf { it.totalPrice }
             binding.textTotal.text = "Total: $$updatedTotal"
         }

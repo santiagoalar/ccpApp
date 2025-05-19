@@ -25,7 +25,8 @@ class CartItemViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             try {
                 val token: String = tokenManager.getToken()
-                purchaseItemsRepository.savePurchase(token, purchase)
+                val userId: String = tokenManager.getUserId()
+                purchaseItemsRepository.savePurchase(token, userId, purchase)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -21,7 +21,7 @@ class VisitRecordAdapter(
         val tvNotes: TextView = itemView.findViewById(R.id.tvNotes)
 
         companion object {
-            val LAYOUT = R.layout.visit_item
+            val LAYOUT = R.layout.item_visit
         }
     }
 

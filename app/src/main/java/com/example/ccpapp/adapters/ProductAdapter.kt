@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.ccpapp.R
-import com.example.ccpapp.databinding.ProductItemBinding
+import com.example.ccpapp.adapters.ProductAdapter.CartStorage.getQuantity
+import com.example.ccpapp.databinding.ItemProductBinding
 import com.example.ccpapp.models.CartItem
 import com.example.ccpapp.models.Product
 
@@ -35,7 +36,7 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
         parent: ViewGroup,
         viewType: Int
     ): ProductViewHolder {
-        val withDataBinding: ProductItemBinding = DataBindingUtil.inflate(
+        val withDataBinding: ItemProductBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             ProductViewHolder.LAYOUT,
             parent,
@@ -56,13 +57,13 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
     }
 
     class ProductViewHolder(
-        val viewDataBinding: ProductItemBinding,
+        val viewDataBinding: ItemProductBinding,
         private val onBuyClick: (Product, Int) -> Unit
     ) :
         RecyclerView.ViewHolder(viewDataBinding.root) {
         companion object {
             @LayoutRes
-            val LAYOUT = R.layout.product_item
+            val LAYOUT = R.layout.item_product
         }
 
         @SuppressLint("SetTextI18n")
@@ -76,11 +77,13 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
                 )
                 .into(viewDataBinding.imageProducto)
 
-            viewDataBinding.editQuantity.setText("0")
+            // Modificar esta línea para convertir el número a String
+            val quantityText = getQuantity(product.id).toString()
+            viewDataBinding.editQuantity.setText(quantityText)
 
             viewDataBinding.buttonPlus.setOnClickListener {
                 val current = viewDataBinding.editQuantity.text.toString().toIntOrNull() ?: 0
-                val maxQuantity = product.stock ?: 0
+                val maxQuantity = product.stock
                 if (current < maxQuantity) {
                     viewDataBinding.editQuantity.setText((current + 1).toString())
                 }
@@ -114,17 +117,14 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
     }
 
     object CartStorage {
-        //data class CartItem(val productId: String, val quantity: Int, val price: Int)
-
         private val items = mutableListOf<CartItem>()
-        private var userId:String = ""
+        private var userId: String = ""
         private val total: Int
             get() = items.sumOf { it.totalPrice }
 
         fun addItem(cartItem: CartItem) {
             val existing = items.find { it.id == cartItem.id }
             if (existing != null) {
-                // Si ya existe, actualiza la cantidad
                 items.remove(existing)
                 items.add(existing.copy(quantity = cartItem.quantity))
             } else {
@@ -132,8 +132,8 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
             }
         }
 
-        fun addUserId(userId: String) {
-            this.userId = userId
+        fun setUserId(id: String) {
+            userId = id
         }
 
         fun getUserId(): String = userId
@@ -145,6 +145,10 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
 
         fun removeItem(productId: String) {
             items.removeAll { it.id == productId }
+        }
+
+        fun getQuantity(productId: String): Int {
+            return items.find { it.id == productId }?.quantity ?: 0
         }
     }
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ccpapp.R
 import com.example.ccpapp.adapters.ClientAdapter
+import com.example.ccpapp.adapters.ClientAdapter.UserStorage
 import com.example.ccpapp.databinding.FragmentSellerBinding
 import com.example.ccpapp.models.Client
 import com.example.ccpapp.network.TokenManager
@@ -73,7 +74,10 @@ class SellerFragment: Fragment() {
             }
 
             override fun onMakeOrderClick(client: Client) {
-                Toast.makeText(context, "Crear pedido para ${client.clientName}", Toast.LENGTH_SHORT).show()
+                UserStorage.clearTempUser()
+                UserStorage.setTempUser(client)
+                viewModel.setSelectedClient(client)
+                navc?.navigate(R.id.action_sellerFragment_to_sellerClientProductFragment)
             }
         })
 
@@ -92,7 +96,7 @@ class SellerFragment: Fragment() {
 
         val tokenManager = TokenManager(requireContext())
         val salesmanId = tokenManager.getUserId()
-        viewModel.refreshClients()
+        viewModel.refreshClients() //TODO
     }
 
 }

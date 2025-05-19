@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Nombre del producto -->
         <TextView
             android:id="@+id/textProductName"
             android:layout_width="0dp"
@@ -28,7 +27,6 @@
             app:layout_constraintEnd_toStartOf="@id/buttonDelete"
             app:layout_constraintBottom_toTopOf="@id/textProductPrice"/>
 
-        <!-- Botón eliminar -->
         <ImageButton
             android:id="@+id/buttonDelete"
             android:layout_width="36dp"
@@ -40,7 +38,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Precio del producto -->
         <TextView
             android:id="@+id/textProductPrice"
             android:layout_width="wrap_content"
@@ -52,7 +49,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <!-- Layout de cantidad: disminuir, número, aumentar -->
         <LinearLayout
             android:id="@+id/quantityLayout"
             android:layout_width="wrap_content"
@@ -64,7 +60,6 @@
             app:layout_constraintStart_toEndOf="@id/textProductPrice"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- Botón disminuir cantidad -->
             <ImageButton
                 android:id="@+id/buttonDecrease"
                 android:layout_width="32dp"
@@ -74,7 +69,6 @@
                 android:contentDescription="Disminuir cantidad"
                 app:tint="@android:color/darker_gray"/>
 
-            <!-- Cantidad -->
             <TextView
                 android:id="@+id/textProductQuantity"
                 android:layout_width="wrap_content"
@@ -84,7 +78,6 @@
                 android:textSize="16sp"
                 android:layout_marginHorizontal="12dp"/>
 
-            <!-- Botón aumentar cantidad -->
             <ImageButton
                 android:id="@+id/buttonIncrease"
                 android:layout_width="32dp"

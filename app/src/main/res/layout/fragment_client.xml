@@ -24,7 +24,6 @@
             android:contentDescription="Cart"
             android:src="@drawable/ic_cart" />
 
-        <!-- Punto rojo -->
         <View
             android:id="@+id/cartBadge"
             android:layout_width="12dp"

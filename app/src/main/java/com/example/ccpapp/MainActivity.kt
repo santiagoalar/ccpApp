@@ -35,10 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         setupWithNavController(bottomNavigationView, navController)
 
-        // Ocultar o mostrar el BottomNavigationView según el fragmento actual
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_home, R.id.signUpFragment, R.id.shoppingCartFragment -> {
+                R.id.navigation_home, R.id.signUpFragment, R.id.shoppingCartFragment,
+                R.id.clientDetailFragment, R.id.routeDetailFragment,
+                R.id.sellerClientProductFragment -> {
                     bottomNavigationView.visibility = android.view.View.GONE
                 }
                 else -> {
@@ -49,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateBottomNavigationMenu(userRole: String) {
-        // Actualizar el menú del BottomNavigationView según el rol del usuario
         val menuRes = if (userRole == Rol.CLIENTE.name) R.menu.bottom_nav_client else R.menu.bottom_nav_seller
         bottomNavigationView.menu.clear()
         bottomNavigationView.inflateMenu(menuRes)
