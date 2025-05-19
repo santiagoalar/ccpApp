@@ -180,10 +180,10 @@ class ClientDetailFragment : Fragment() {
         // Observar el estado de verificación del video
         videoRecordViewModel.videoStatus.observe(viewLifecycleOwner) { status ->
             when (status?.status) {
-                "COMPLETE" -> {
+                "COMPLETED" -> {
                     // Video procesado completamente, mostrar resultado del análisis
                     val analysisResult = status.analysisResult ?: "Análisis completado"
-                    updateProcessingStatus(analysisResult, android.R.color.holo_green_light)
+                    updateProcessingStatus(analysisResult, android.R.color.white)
                     stopStatusChecking() // Detener verificaciones porque ya está completo
                 }
                 "PROCESSING" -> {
