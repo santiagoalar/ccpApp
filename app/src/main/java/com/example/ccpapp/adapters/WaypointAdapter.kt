@@ -1,6 +1,8 @@
 package com.example.ccpapp.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -48,6 +50,28 @@ class WaypointAdapter : RecyclerView.Adapter<WaypointAdapter.WaypointViewHolder>
             binding.tvCreationDate.text = "Fecha de creación: ${formatDate(waypoint.createdAt)}"
             binding.tvAddress.text = "Dirección: ${waypoint.address}"
             binding.tvCoordinates.text = "Coordenadas: ${waypoint.latitude}, ${waypoint.longitude}"
+            
+            // Configurar el enlace a Google Maps
+            binding.tvOpenInMaps.setOnClickListener {
+                openInGoogleMaps(waypoint.latitude, waypoint.longitude, waypoint.name)
+            }
+        }
+        
+        private fun openInGoogleMaps(latitude: Double, longitude: Double, label: String) {
+            val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude($label)")
+            val mapIntent = Intent(Intent.ACTION_VIEW, uri)
+            mapIntent.setPackage("com.google.android.apps.maps") // Asegura que se abra Google Maps
+            
+            if (mapIntent.resolveActivity(binding.root.context.packageManager) != null) {
+                binding.root.context.startActivity(mapIntent)
+            } else {
+                // Fallback en caso de que Google Maps no esté instalado
+                val browserUri = Uri.parse(
+                    "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude"
+                )
+                val browserIntent = Intent(Intent.ACTION_VIEW, browserUri)
+                binding.root.context.startActivity(browserIntent)
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

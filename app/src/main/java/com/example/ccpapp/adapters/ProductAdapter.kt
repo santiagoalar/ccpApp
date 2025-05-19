@@ -132,6 +132,10 @@ class ProductAdapter(private val onBuyClick: (Product, Int) -> Unit) :
             }
         }
 
+        fun setUserId(id: String) {
+            userId = id
+        }
+
         fun getUserId(): String = userId
         fun getItems(): List<CartItem> = items.toList()
 

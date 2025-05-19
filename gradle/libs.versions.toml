@@ -19,6 +19,7 @@ mockitoInlineVersion = "4.0.0"
 navigationFragmentKtx = "2.8.9"
 navigationUiKtx = "2.8.9"
 playServicesMaps = "19.2.0"
+playServicesMapsVersion = "18.1.0"
 volley = "1.2.1"
 
 [libraries]
@@ -41,6 +42,7 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
 mockito-inline-v400 = { module = "org.mockito:mockito-inline", version.ref = "mockitoInlineVersion" }
 
+play-services-maps-v1810 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]

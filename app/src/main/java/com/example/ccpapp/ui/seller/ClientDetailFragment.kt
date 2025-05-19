@@ -6,6 +6,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
@@ -20,8 +22,10 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.ccpapp.adapters.ClientAdapter
 import com.example.ccpapp.databinding.FragmentSellerClientDetailBinding
 import com.example.ccpapp.models.Client
+import com.example.ccpapp.models.VideoResponse
 import com.example.ccpapp.network.TokenManager
 import com.example.ccpapp.viewmodels.UserViewModel
 import com.example.ccpapp.viewmodels.VideoRecordViewModel
@@ -39,10 +43,17 @@ class ClientDetailFragment : Fragment() {
 
     private lateinit var viewModel: UserViewModel
     private lateinit var visitRecordsViewModel: VisitRecordsViewModel
+    private lateinit var videoRecordViewModel: VideoRecordViewModel
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var captureVideoLauncher: ActivityResultLauncher<Intent>
     private lateinit var tokenManager: TokenManager
     private var client: Client? = null
+    private var currentVideoPath: String = ""
+    
+    // Handler y Runnable para la verificación periódica
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var videoStatusChecker: Runnable
+    private var isCheckingStatus = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,23 +62,63 @@ class ClientDetailFragment : Fragment() {
     ): View {
         _binding = FragmentSellerClientDetailBinding.inflate(inflater, container, false)
 
+        // Inicializar el Runnable para verificar el estado del video
+        videoStatusChecker = object : Runnable {
+            override fun run() {
+                if (isCheckingStatus) {
+                    val videoId = ClientAdapter.UserStorage.getVideoId()
+                    if (!videoId.isNullOrEmpty()) {
+                        videoRecordViewModel.checkIfVideoFinished()
+                    }
+                    // Programar la próxima verificación después de 10 segundos
+                    handler.postDelayed(this, 10000)
+                }
+            }
+        }
 
         captureVideoLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val videoUri = result.data?.data
+                val videoFile = File(currentVideoPath)
+                
+                if (videoFile.exists() && videoFile.length() > 0) {
+               
+                    val loadingDialog = AlertDialog.Builder(requireContext())
+                        .setTitle("Procesando video")
+                        .setMessage("Enviando video para análisis de IA...")
+                        .setCancelable(false)
+                        .create()
+                    loadingDialog.show()
 
-                Toast.makeText(requireContext(), "Video guardado: $videoUri", Toast.LENGTH_SHORT).show()
+                    videoRecordViewModel.sendVideo(videoFile)
+                    
+                    videoRecordViewModel.videoSendResult.observe(viewLifecycleOwner) { response ->
+                        loadingDialog.dismiss()
+                        if (response != null) {
+
+                            showVideoSentSuccessDialog()
+
+                            binding.tvProcessingStatus.text = "Video enviado, procesando..."
+                            binding.tvProcessingStatus.setTextColor(resources.getColor(android.R.color.holo_orange_dark))
+                        } else {
+
+                            Toast.makeText(requireContext(), "Error al enviar el video", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    
+                    videoRecordViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+                        if (!isLoading) {
+                            loadingDialog.dismiss()
+                        }
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Error al grabar el video", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(requireContext(), "No se grabó ningún video", Toast.LENGTH_SHORT).show()
             }
         }
-
-        binding.btnRecordVideo.setOnClickListener {
-            openVideoCamera()
-        }
-
 
         return binding.root
     }
@@ -76,8 +127,8 @@ class ClientDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
-        visitRecordsViewModel =
-            ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
+        visitRecordsViewModel = ViewModelProvider(requireActivity())[VisitRecordsViewModel::class.java]
+        videoRecordViewModel = ViewModelProvider(requireActivity())[VideoRecordViewModel::class.java]
         tokenManager = TokenManager(requireContext())
 
         binding.btnBack.setOnClickListener {
@@ -100,22 +151,97 @@ class ClientDetailFragment : Fragment() {
             if (isGranted) {
                 openVideoCamera()
             } else {
-                Toast.makeText(requireContext(), "Permiso de cámara denegado", Toast.LENGTH_SHORT).show()
-                openAppSettings()
+                showCameraPermissionDeniedDialog()
             }
         }
 
         binding.btnRecordVideo.setOnClickListener {
             checkCameraPermissionAndRecord()
         }
+
+        // Comprobar si hay un videoId guardado para iniciar verificaciones
+        val videoId = ClientAdapter.UserStorage.getVideoId()
+        if (!videoId.isNullOrEmpty()) {
+            updateProcessingStatus("Verificando estado del video...", android.R.color.holo_orange_dark)
+            startStatusChecking()
+        }
+
+        // Observar el resultado del envío del video
+        videoRecordViewModel.videoSendResult.observe(viewLifecycleOwner) { response ->
+            if (response != null) {
+                showVideoSentSuccessDialog()
+                updateProcessingStatus("Video enviado, procesando...", android.R.color.holo_orange_dark)
+                startStatusChecking()
+            } else {
+                Toast.makeText(requireContext(), "Error al enviar el video", Toast.LENGTH_SHORT).show()
+            }
+        }
+        
+        // Observar el estado de verificación del video
+        videoRecordViewModel.videoStatus.observe(viewLifecycleOwner) { status ->
+            when (status?.status) {
+                "COMPLETE" -> {
+                    // Video procesado completamente, mostrar resultado del análisis
+                    val analysisResult = status.analysisResult ?: "Análisis completado"
+                    updateProcessingStatus(analysisResult, android.R.color.holo_green_light)
+                    stopStatusChecking() // Detener verificaciones porque ya está completo
+                }
+                "PROCESSING" -> {
+                    // Video en procesamiento
+                    updateProcessingStatus("Video en procesamiento...", android.R.color.holo_orange_dark)
+                }
+                "ERROR" -> {
+                    // Error en el procesamiento
+                    updateProcessingStatus("Error en el procesamiento:", android.R.color.holo_red_light)
+                    stopStatusChecking() // Detener verificaciones por error
+                }
+                "PENDING" -> {
+                    // Pendiente de procesamiento
+                    updateProcessingStatus("En cola para procesamiento...", android.R.color.holo_orange_light)
+                }
+                else -> {
+                    // Estado desconocido
+                    updateProcessingStatus("Estado: ${status?.status ?: "Desconocido"}", android.R.color.white)
+                }
+            }
+        }
     }
 
     private fun checkCameraPermissionAndRecord() {
-        if (requireContext().checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            openVideoCamera()
-        } else {
-            requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+        when {
+            requireContext().checkSelfPermission(android.Manifest.permission.CAMERA) == 
+                    android.content.pm.PackageManager.PERMISSION_GRANTED -> {
+                openVideoCamera()
+            }
+            shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA) -> {
+                showCameraPermissionRationaleDialog()
+            }
+            else -> {
+                requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            }
         }
+    }
+
+    private fun showCameraPermissionRationaleDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Permiso de cámara necesario")
+            .setMessage("Para grabar el video de análisis de IA, necesitamos acceder a tu cámara. Por favor, concede el permiso en la siguiente pantalla.")
+            .setPositiveButton("Aceptar") { _, _ ->
+                requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun showCameraPermissionDeniedDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Permiso denegado")
+            .setMessage("Sin acceso a la cámara no podemos grabar el video para el análisis de IA. Puedes habilitarlo en la configuración de la aplicación.")
+            .setPositiveButton("Ir a configuración") { _, _ ->
+                openAppSettings()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun openAppSettings() {
@@ -205,12 +331,79 @@ class ClientDetailFragment : Fragment() {
     }
 
     private fun openVideoCamera() {
-        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+        val videoFile = createVideoFile()
+        val videoUri = FileProvider.getUriForFile(
+            requireContext(),
+            "com.example.ccpapp.fileprovider",
+            videoFile
+        )
+        
+        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, videoUri)
+            putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30)
+        }
+        
         captureVideoLauncher.launch(intent)
+    }
+    
+    private fun createVideoFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+        
+        val videoFile = File.createTempFile(
+            "VIDEO_${timeStamp}_", /* prefix */
+            ".mp4", /* suffix */
+            storageDir /* directory */
+        )
+        
+        currentVideoPath = videoFile.absolutePath
+        return videoFile
+    }
+
+    private fun showVideoSentSuccessDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Video enviado")
+            .setMessage("El video ha sido enviado correctamente. Pronto recibirás recomendaciones basadas en el análisis de IA.")
+            .setPositiveButton("Aceptar", null)
+            .create()
+            .show()
+    }
+
+    private fun updateProcessingStatus(message: String, colorResId: Int) {
+        binding.tvProcessingStatus.text = message
+        binding.tvProcessingStatus.setTextColor(resources.getColor(colorResId))
+    }
+
+    private fun startStatusChecking() {
+        if (!isCheckingStatus) {
+            isCheckingStatus = true
+            handler.post(videoStatusChecker)
+        }
+    }
+
+    private fun stopStatusChecking() {
+        isCheckingStatus = false
+        handler.removeCallbacks(videoStatusChecker)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        stopStatusChecking() // Asegurarse de detener las verificaciones al destruir la vista
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reanudar verificaciones si hay un video en proceso
+        val videoId = ClientAdapter.UserStorage.getVideoId()
+        if (!videoId.isNullOrEmpty()) {
+            startStatusChecking()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Pausar verificaciones mientras el fragmento no está visible
+        stopStatusChecking()
     }
 }

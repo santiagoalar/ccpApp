@@ -24,6 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import java.time.LocalDateTime
@@ -64,23 +65,27 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
             findNavController().navigateUp()
         }
 
-        // Inicializar el mapa - Corregido el ID para que coincida con el XML
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.mapFragmentId) as SupportMapFragment
+        // Inicializar el mapa con un retraso para asegurar que el fragmento esté completamente creado
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragmentId) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        // Verificar que se haya encontrado el fragmento del mapa
+        if (mapFragment == null) {
+            Log.e("RouteDetailFragment", "Error: No se pudo encontrar el fragmento del mapa")
+        } else {
+            Log.d("RouteDetailFragment", "Fragmento del mapa encontrado correctamente")
+        }
 
         routeViewModel.selectedRoute.observe(viewLifecycleOwner) { route ->
             route?.let {
                 selectedRoute = it
                 updateUI(it)
                 
-                // Agregar logs para depuración
                 Log.d("RouteDetailFragment", "Route waypoints: ${it.waypoints.size}")
                 it.waypoints.forEach { waypoint ->
                     Log.d("RouteDetailFragment", "Waypoint: ${waypoint.name}, Lat: ${waypoint.latitude}, Lng: ${waypoint.longitude}")
                 }
-                
-                // Si el mapa ya está listo, actualizar los marcadores
+
                 googleMap?.let { map ->
                     updateMapWithWaypoints(it.waypoints)
                 }
@@ -97,7 +102,6 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
         binding.tvRouteUpdatedAt.text = "Actualizada el: ${formatDate(route.updatedAt)}"
         binding.tvDueDate.text = formatDate(route.dueToDate)
 
-        // Actualizar la lista de waypoints
         val sortedWaypoints = route.waypoints.sortedBy { it.order }
         waypointAdapter.waypoints = sortedWaypoints
     }
@@ -113,19 +117,19 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
 
             try {
                 val boundsBuilder = LatLngBounds.Builder()
-                val polylineOptions = PolylineOptions().width(8f).color(0xFF4CAF50.toInt()) // Color verde más visible
+                val polylineOptions = PolylineOptions().width(8f).color(0xFF4CAF50.toInt())
 
-                // Agregar marcadores y puntos de la polyline
                 waypoints.forEachIndexed { index, waypoint ->
                     val position = LatLng(waypoint.latitude, waypoint.longitude)
                     
-                    // Color diferente para el primer y último marcador
+                    Log.d("RouteDetailFragment", "Adding marker at: ${waypoint.latitude}, ${waypoint.longitude}")
+
                     val markerOptions = MarkerOptions()
                         .position(position)
                         .title(waypoint.name)
                         .snippet("Orden: ${waypoint.order}")
-                    
-                    // Primer marcador en verde, último en rojo, resto en azul
+
+                    // Diferente color para el primer y último punto
                     when (index) {
                         0 -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                         waypoints.size - 1 -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
@@ -137,23 +141,35 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
                     boundsBuilder.include(position)
                 }
 
-                // Agregar la línea que conecta los puntos
                 map.addPolyline(polylineOptions)
 
-                // Mover la cámara para que se vean todos los puntos
+                // Aplicar los límites del mapa con un padding para mejor visualización
                 val bounds = boundsBuilder.build()
-                val padding = 150 // espacio alrededor de los marcadores en píxeles
+                val padding = 150
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-                map.animateCamera(cameraUpdate)
+                
+                // Utilizar un retraso corto para asegurar que el mapa esté listo
+                binding.root.post {
+                    try {
+                        map.animateCamera(cameraUpdate)
+                        Log.d("RouteDetailFragment", "Map camera updated successfully")
+                    } catch (e: Exception) {
+                        Log.e("RouteDetailFragment", "Error animating camera: ${e.message}")
+                        // Fallback: ir al primer punto si falla el bounds
+                        val firstPoint = LatLng(waypoints.first().latitude, waypoints.first().longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(firstPoint, 15f))
+                    }
+                }
                 
                 Log.d("RouteDetailFragment", "Map updated with ${waypoints.size} waypoints")
             } catch (e: Exception) {
                 Log.e("RouteDetailFragment", "Error updating map: ${e.message}")
+                // Fallback en caso de error
                 if (waypoints.isNotEmpty()) {
                     val firstPoint = LatLng(waypoints.first().latitude, waypoints.first().longitude)
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(firstPoint, 15f))
-                } else {
-                    Log.w("RouteDetailFragment", "No waypoints available to center map")
+                }else{
+                    Log.d("RouteDetailFragment", "No waypoints to display on map")
                 }
             }
         } ?: Log.e("RouteDetailFragment", "Google Map is null")
@@ -175,18 +191,10 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
         this.googleMap = googleMap
         Log.d("RouteDetailFragment", "Map is ready")
 
-        // Habilitar controles del mapa para mejor usabilidad
-        googleMap.uiSettings.apply {
-            isZoomControlsEnabled = true
-            isCompassEnabled = true
-            isMyLocationButtonEnabled = true
-            isMapToolbarEnabled = true
-        }
-
-        // Configurar estilo del mapa para modo oscuro si es posible
+        // Configurar el mapa para modo oscuro
         try {
             val success = googleMap.setMapStyle(
-                com.google.android.gms.maps.model.MapStyleOptions.loadRawResourceStyle(
+                MapStyleOptions.loadRawResourceStyle(
                     requireContext(),
                     R.raw.map_style_dark
                 )
@@ -196,12 +204,29 @@ class RouteDetailFragment : Fragment(), OnMapReadyCallback {
             }
         } catch (e: Exception) {
             Log.e("RouteDetailFragment", "Can't find style. Error: ", e)
+            // Si falla, establecer al menos un tipo de mapa básico
+            googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        }
+
+        // Establecer un zoom predeterminado para evitar que se muestre en gris
+        val defaultLocation = LatLng(4.6097, -74.0817) // Bogotá como ubicación predeterminada
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f))
+
+        // Habilitar controles y configuraciones del mapa
+        googleMap.uiSettings.apply {
+            isZoomControlsEnabled = true
+            isCompassEnabled = true
+            isMapToolbarEnabled = true
         }
 
         // Si ya tenemos los datos de la ruta, actualizar el mapa
         selectedRoute?.let {
-            Log.d("RouteDetailFragment", "Updating map with ${it.waypoints.size} waypoints from onMapReady")
-            updateMapWithWaypoints(it.waypoints)
+            if (it.waypoints.isNotEmpty()) {
+                Log.d("RouteDetailFragment", "Updating map with ${it.waypoints.size} waypoints from onMapReady")
+                updateMapWithWaypoints(it.waypoints)
+            } else {
+                Log.w("RouteDetailFragment", "Route has no waypoints")
+            }
         } ?: Log.d("RouteDetailFragment", "No selected route available")
     }
 

@@ -87,6 +87,8 @@ class ClientAdapter(
 
     object UserStorage {
         private val users = mutableListOf<User>()
+        private val tempUser = mutableListOf<Client>()
+        private var videoId = mutableListOf<String>()
 
         fun addUser(user: User) {
             clear()
@@ -103,6 +105,28 @@ class ClientAdapter(
 
         fun getZeroUser(): User? {
             return if (users.isNotEmpty()) users[0] else null
+        }
+
+        fun setVideoId(id: String) {
+            videoId.clear()
+            videoId.add(id)
+        }
+
+        fun getVideoId(): String? {
+            return if (videoId.isNotEmpty()) videoId[0] else null
+        }
+
+        fun setTempUser(user: Client) {
+            tempUser.clear()
+            tempUser.add(user)
+        }
+
+        fun getTempUser(): Client? {
+            return if (tempUser.isNotEmpty()) tempUser[0] else null
+        }
+
+        fun clearTempUser() {
+            users.clear()
         }
     }
 }

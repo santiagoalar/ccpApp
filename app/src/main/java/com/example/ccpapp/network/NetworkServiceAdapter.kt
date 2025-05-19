@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.android.volley.Request
+import com.android.volley.Request.Method
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -18,6 +19,8 @@ import com.example.ccpapp.models.Route
 import com.example.ccpapp.models.StatusUpdates
 import com.example.ccpapp.models.TokenInfo
 import com.example.ccpapp.models.User
+import com.example.ccpapp.models.VideoResponse
+import com.example.ccpapp.models.VideoStatus
 import com.example.ccpapp.models.VisitRecord
 import com.example.ccpapp.models.WayPoint
 import org.json.JSONArray
@@ -241,7 +244,7 @@ class NetworkServiceAdapter(context: Context) {
         return context.assets.open(filename).bufferedReader().use { it.readText() }
     }
 
-    suspend fun postCartItems(token: String, cartItemsJson: JSONObject) =
+    suspend fun postCartItems(token: String, userId: String, cartItemsJson: JSONObject) =
         suspendCoroutine<Unit> { cont ->
             val url = "${StaticConstants.API_BASE_URL}clients/orders/"
 
@@ -259,6 +262,7 @@ class NetworkServiceAdapter(context: Context) {
                 override fun getHeaders(): MutableMap<String, String> {
                     val headers = HashMap<String, String>()
                     headers["Authorization"] = "Bearer $token"
+                    headers["salesman_id"] = userId
                     return headers
                 }
             }
@@ -520,14 +524,59 @@ class NetworkServiceAdapter(context: Context) {
         return routeList
     }
 
-    suspend fun sendVideo(videoFile: java.io.File, token: String): JSONObject =
+    suspend fun sendVideo(videoFile: java.io.File, token: String): VideoResponse =
         suspendCoroutine { cont ->
-            val url = "${StaticConstants.API_BASE_URL}video/upload"
-            val request = object : JsonObjectRequest(
-                Method.POST, url, null,
+            val url = "${StaticConstants.API_BASE_URL}videos/upload"
+            
+            val request = MultipartRequest(
+                Method.POST,
+                url,
+                videoFile,
+                "video",
+                "video/mp4",
                 { response ->
-                    cont.resume(response)
-                    Log.d("response", "response successful")
+                    val videoResponse = VideoResponse(
+                        id = response.getString("id"),
+                        fileName = response.getString("filename"),
+                        status = response.getString("status"),
+                        message = response.getString("message")
+                    )
+                    cont.resume(videoResponse)
+                    Log.d("response", "Video enviado exitosamente")
+
+
+
+                    Log.d("::::: RESPONSEEEE:::::::::",response.toString())
+                },
+                { error ->
+                    cont.resumeWithException(error)
+                    Log.d("response failed", error.message.toString())
+                },
+                token
+            )
+
+            Log.d("request", "Enviando video: ${videoFile.absolutePath}")
+            requestQueue.add(request)
+        }
+
+    suspend fun checkIfVideoFinished(videoId: String, token: String): VideoStatus =
+        suspendCoroutine { cont ->
+            val url = "${StaticConstants.API_BASE_URL}videos/${videoId}/status"
+            val request = object : JsonObjectRequest(
+                Method.GET, url, null,
+                { response ->
+                    try {
+                        val videoStatus = VideoStatus(
+                            id = response.optString("id"),
+                            status = response.optString("status"),
+                            createdAt = response.optString("created_at"),
+                            updatedAt = response.optString("updated_at"),
+                            analysisResult = response.optString("analysis_result")
+                        )
+                        cont.resume(videoStatus)
+                    } catch (e: Exception) {
+                        cont.resumeWithException(e)
+                    }
                 },
                 { error ->
                     cont.resumeWithException(error)
@@ -544,5 +593,6 @@ class NetworkServiceAdapter(context: Context) {
             Log.d("request", request.toString())
             requestQueue.add(request)
         }
-
+    
 }
+
